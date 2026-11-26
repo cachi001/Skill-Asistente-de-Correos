@@ -1,0 +1,6 @@
+*.pyc
+__pycache__/
+.DS_Store
+.notas-proyecto.md
+.engram/
+desplegar.ps1

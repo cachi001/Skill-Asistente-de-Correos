@@ -58,14 +58,51 @@ Cada entrada lleva su **Ámbito** (facultad), **Modalidad** y **Tono sugerido**.
 
 ## 🚀 Instalación
 
-Es una skill de Claude Code: va en tu carpeta de skills.
+Una skill de Claude Code es una carpeta con instrucciones que va **dentro de tu carpeta de skills** (`~/.claude/skills/`). No se instala nada más: no hay servidor, ni base de datos, ni dependencias que compilar.
+
+**Antes de empezar** necesitás tener [Claude Code](https://claude.com/claude-code) instalado y haber iniciado sesión al menos una vez.
+
+### Opción A — con git (recomendada)
+
+Clonás el repositorio directamente dentro de la carpeta de skills, con el nombre `tup-asistente-correos`:
 
 ```bash
 git clone https://github.com/cachi001/Skill-Asistente-de-Correos.git \
   ~/.claude/skills/tup-asistente-correos
 ```
 
-La primera vez, Claude te guía para conectar el buzón (Gmail con un clic, o agregar la cuenta al Outlook clásico).
+En Windows (PowerShell), la ruta es `$env:USERPROFILE\.claude\skills\tup-asistente-correos`.
+
+Para **actualizar** más adelante:
+
+```bash
+cd ~/.claude/skills/tup-asistente-correos
+git pull
+```
+
+### Opción B — sin git
+
+Descargás el repositorio como ZIP (botón verde **Code → Download ZIP** en GitHub), lo descomprimís, y copiás la carpeta resultante a `~/.claude/skills/` con el nombre **`tup-asistente-correos`**. La estructura final tiene que quedar así:
+
+```
+~/.claude/skills/tup-asistente-correos/
+├── SKILL.md
+├── references/
+└── assets/
+```
+
+### Verificar que quedó instalada
+
+Abrí Claude Code y escribí `/` — la skill tiene que aparecer en la lista como **tup-asistente-correos**. O simplemente pedíle: «ponete al día con los correos de la tecnicatura» y debería activarse sola.
+
+### Primera vez: conectar el buzón
+
+La skill no guarda contraseñas. La primera vez te guía según tu caso:
+
+- **Gmail** → te pide autorizar el conector oficial de Google (un login, un clic). Listo.
+- **Microsoft 365 (Outlook clásico)** → alcanza con tener el **Outlook de escritorio abierto y con tu sesión iniciada**. La skill le habla a ese Outlook; no necesita token ni permiso del administrador. (Detalle técnico en [`references/outlook-clasico.md`](references/outlook-clasico.md).)
+
+Después, la skill crea sola la carpeta de la base de conocimiento en `~/.correos-tup/conocimiento/` la primera vez que la necesita.
 
 ## 💬 Uso
 

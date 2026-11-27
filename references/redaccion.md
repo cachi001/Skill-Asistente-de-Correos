@@ -8,7 +8,7 @@ escribe esa persona o esa oficina.
 ## Forma
 
 - **Texto plano.** Sin Markdown, sin negritas con asteriscos, sin viñetas con guiones si
-  se pueden evitar: el alumno lo lee en un cliente de correo.
+  se pueden evitar: quien lo recibe lo lee en un cliente de correo.
 - **Saludo con el nombre** si figura en el correo ("Hola, Ana:"), y si no, "Hola:".
 - **Al grano.** Lo primero que se lee es la respuesta a lo que preguntó. El contexto, después y solo si hace falta.
 - **Pasos numerados** cuando el trámite tiene más de dos pasos.
@@ -24,7 +24,7 @@ como el correo que llegó, no siempre igual. Mirá estas señales en el correo r
   docente, una oficina, otra institución, sin emojis. Respondé en **usted**, con "Estimado/a"
   o "Buenos días", cierre "Saludos cordiales". Nada de voseo ni emojis.
 - **Informal / cercano** → señales: "hola", voseo ("tenés", "querés"), tono relajado, un
-  alumno escribiendo corto, a veces un emoji. Respondé en **voseo**, cercano, "Hola, [nombre]".
+  mensaje corto (de un alumno, un colega o quien sea), a veces un emoji. Respondé en **voseo**, cercano, "Hola, [nombre]".
 - **Neutro / no está claro** → tratá de **usted** por defecto (es más seguro no pasarse de
   confianza), pero sin acartonar.
 
@@ -37,11 +37,11 @@ entrada de la base tiene un campo "Tono sugerido", respetalo salvo que el correo
 - Sin culpas ni motivos inventados: si hubo una demora, no inventes la causa; si hace
   falta aclarar, "Te confirmo: …".
 - Sin "como me pediste" ni frases de relleno ("espero que estés bien", "no dudes en…" repetido).
-- Sin jerga en inglés ni tecnicismos que el alumno no tenga por qué saber.
-- Si el alumno está molesto: amable, sin discutir, sin repetirle plazos que ya conoce;
+- Sin jerga en inglés ni tecnicismos que quien escribe no tenga por qué saber.
+- Si quien escribe está molesto: amable, sin discutir, sin repetirle plazos que ya conoce;
   responder lo concreto.
 - No cerrar puertas: si no se puede lo que pide, decir qué sí puede hacer.
-- No citar notas ni datos académicos personales salvo que la consulta sea justamente eso
+- No citar notas ni datos personales salvo que la consulta sea justamente eso
   y el buzón sea el canal oficial para darlos.
 
 ## Qué no responder por correo

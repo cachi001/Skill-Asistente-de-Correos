@@ -13,9 +13,15 @@ por tema, en la misma máquina, así lo leen igual la terminal y la app de escri
 Claude Code. Se lee y se escribe con las herramientas de archivos normales. Vos lo podés
 abrir y corregir cuando quieras.
 
-## Temas de partida
+## Temas
 
-Usalos como punto de partida y ajustalos a lo que aparezca en los correos reales:
+Los temas salen del uso del buzón (lo que la persona contestó en "La primera vez", guardado en
+`~/.correos-tup/perfil.md`) y de los correos reales, no de una lista fija. Proponelos vos a
+partir de lo que viste y confirmalos con ella antes de crear los archivos.
+
+Por ejemplo, un buzón de **pedidos entre oficinas** puede tener "Ajustes razonables",
+"Altas de usuarios", "Resoluciones y feriados", "Pedidos de docentes". Un buzón de
+**consultas de alumnos y aspirantes** suele quedar parecido a esto:
 
 | Archivo | Cubre |
 |---|---|
@@ -36,7 +42,10 @@ La TUP se cursa en distintas facultades regionales y un mismo trámite puede res
 distinto en cada una. Por eso cada entrada lleva **Ámbito** (la facultad o sede a la que
 aplica, o "todas").
 
-- Si el buzón atiende **una sola** facultad: los 7 archivos van sueltos y el Ámbito queda
+Si el tema no depende de la facultad (por ejemplo un pedido interno), el Ámbito queda en
+"todas" y no hace falta preguntar.
+
+- Si el buzón atiende **una sola** facultad: los archivos van sueltos y el Ámbito queda
   como dato dentro de cada entrada.
 - Si atiende **varias**: una carpeta por facultad, cada una con sus temas
   (`FRM/cursada.md`, `FRBA/cursada.md`...), así no se cruzan ni físicamente.
@@ -45,10 +54,12 @@ Preguntale a la persona cuántas facultades atiende antes de elegir la estructur
 
 ## Armado inicial desde correos ya respondidos
 
-1. Con el conector, traé los correos que la persona ya respondió (en Gmail, los enviados:
-   `in:sent newer_than:180d`). Si hay pocos, ampliá el período.
-2. Agrupá por tema (no por remitente). Un tema es una pregunta que se repite con la misma
-   respuesta: "¿cómo pido la constancia de alumno regular?".
+1. Traé los correos que la persona ya respondió. En Gmail, los enviados:
+   `in:sent newer_than:180d`. En Outlook, corré `indexar-enviados` una vez y después buscá
+   con `buscar-respuestas`. Si hay pocos, ampliá el período.
+2. Agrupá por tema (no por remitente). Un tema es un pedido o una pregunta que se repite con
+   la misma respuesta: "¿cómo pido la constancia de alumno regular?", "¿cómo se carga un
+   ajuste razonable?".
 3. Para cada tema redactá una entrada **generalizada**:
    - Sin nombres, correos, DNI, legajos ni casos particulares.
    - Con la respuesta que efectivamente se dio, no con una mejorada que inventes.

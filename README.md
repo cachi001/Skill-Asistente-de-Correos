@@ -4,7 +4,7 @@
 
 **Ayuda a responder los correos de un buzón institucional o de Gmail de la Tecnicatura Universitaria en Programación (TUP, UTN) desde Claude Code, sea cual sea su uso: lee lo que llegó, lo clasifica, aprende de cómo ya se respondió y deja las respuestas listas para revisar y enviar. También atiende buzones compartidos.**
 
-![version](https://img.shields.io/badge/versión-0.5.0-1f5fa8)
+![version](https://img.shields.io/badge/versión-0.5.1-1f5fa8)
 ![licencia](https://img.shields.io/badge/licencia-Apache--2.0-1a7f45)
 ![plataforma](https://img.shields.io/badge/Claude%20Code-terminal%20y%20escritorio-6b7684)
 
@@ -21,7 +21,7 @@ Pensada para gente **sin conocimiento técnico**: habla en castellano simple, ex
 ## ✨ Qué hace
 
 - 📥 **Lee la bandeja** y lista lo que está sin responder.
-- 🗂️ **Clasifica** cada consulta por tema, **facultad** y **modalidad** — razonando, no por palabras fijas.
+- 🗂️ **Clasifica** cada correo por tema (según para qué usás el buzón), **facultad** y **modalidad**, razonando, no por palabras fijas.
 - ✍️ **Redacta borradores** desde una base de respuestas validada, **adaptando el tono** (formal o informal según el correo).
 - ✅ **Envía solo con tu OK**, uno por uno, con adjuntos si hacen falta. Cada borrador tiene un **código de envío de un solo uso**: sin él no sale, y no se puede mandar dos veces.
 - 🔒 **Modo solo lectura** por buzón: si un correo es solo para mirar, la skill no puede armar ni enviar nada desde ahí, aunque alguien lo pida por error.
@@ -49,12 +49,9 @@ Microsoft 365  ⇄  Outlook en tu PC  ⇄  la skill
 
 ## 🧠 La base de conocimiento
 
-Es lo único de lo que la skill saca la información institucional, y **la valida la persona**. Vive en archivos Markdown locales, **uno por tema**, en `~/.correos-tup/conocimiento/` (editables a mano):
+Es lo único de lo que la skill saca la información institucional, y **la valida la persona**. Vive en archivos Markdown locales, **uno por tema**, en `~/.correos-tup/conocimiento/` (editables a mano).
 
-```
-inscripcion-y-admision · cursada · examenes · tramites-administrativos
-acceso-al-campus · becas-y-aranceles · contactos-y-derivaciones
-```
+Los temas dependen de para qué se usa el buzón. Por ejemplo, uno de consultas de alumnos puede tener `inscripcion-y-admision · cursada · examenes · tramites-administrativos`, y uno de pedidos entre oficinas `ajustes-razonables · altas-de-usuarios · resoluciones-y-feriados`.
 
 Cada entrada lleva su **Ámbito** (facultad), **Modalidad** y **Tono sugerido**. **Nunca** guarda datos personales ni contraseñas. Crece solo con preguntas nuevas distintas (se estanca, queda navegable), y lo que no está validado sale con un hueco `[COMPLETAR]` en vez de un dato inventado.
 
@@ -105,8 +102,9 @@ escribís vos en la ventana de Google o de Microsoft.
 Le hablás en castellano, por ejemplo:
 
 > «Ponete al día con los correos de la tecnicatura»
-> «¿Qué consultas tengo sin responder en el mail?»
+> «¿Qué tengo sin responder en el mail?»
 > «Armemos las respuestas tipo con lo que ya contesté»
+> «Este buzón es solo para mirar, no mandes nada desde acá»
 
 La skill muestra un menú corto, arma la tabla de clasificación y te propone cada respuesta con su fuente. **Nada sale sin tu OK.**
 
@@ -118,7 +116,7 @@ tup-asistente-correos/
 ├── README.md
 ├── VERSION
 ├── references/
-│   ├── conectar-buzon.md         # conectar Gmail
+│   ├── conectar-buzon.md         # qué camino usar y cómo conectar Gmail
 │   ├── outlook-clasico.md        # modo Outlook clásico (COM): requisitos y uso
 │   ├── base-de-conocimiento.md   # armado, Ámbito, modalidad, mantenimiento
 │   └── redaccion.md              # forma y tono (incluye tono adaptativo)
@@ -145,7 +143,7 @@ tup-asistente-correos/
 
 - **Solo instrucciones, sin servidor propio.** Usa el conector oficial de Gmail y, para Microsoft, el Outlook ya instalado. Menos cosas que instalar y que puedan romperse.
 - **Base en Markdown local, no en una base de datos.** Es criterio humano: la persona la lee, valida y corrige en segundos.
-- **Ámbito por entrada.** Un trámite cambia entre facultades; marcar la facultad evita darle a un alumno el procedimiento de otra sede.
+- **Ámbito por entrada.** Un trámite cambia entre facultades; marcar la facultad evita darle a alguien el procedimiento de otra sede.
 - **Borrador primero, envío después.** Crear un borrador no tiene consecuencias; enviar sí. Un OK vale por un solo correo.
 
 ## 📄 Licencia

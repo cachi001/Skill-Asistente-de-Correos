@@ -66,28 +66,24 @@ sigue, no es opcional.
 
 ---
 
-## Cómo lee y escribe el correo: el conector oficial
+## Cómo lee y escribe el correo: dos caminos
 
-La skill NO instala nada ni corre un servidor propio. Usa los **conectores oficiales de
-Claude**: las tools `Gmail` (`search_threads`, `get_thread`, `list_drafts`,
-`create_draft`, `update_draft`, `reply`, `send_message`...) o `Microsoft 365`. Ya vienen
-en Claude Code, en la terminal y en la app de escritorio.
+La skill NO instala nada ni corre un servidor propio. Primero preguntá (o fijate) qué correo
+es, y usá el camino que le toca:
 
-Al activarte, fijate si esas tools están disponibles:
-- **No están** → la persona tiene que conectar el buzón una vez. Leé `references/conectar-buzon.md`
-  y guiala (Gmail es un clic; Microsoft institucional necesita que un administrador apruebe).
-- **Están** → seguí al menú.
+- **Gmail** → el **conector oficial de Gmail de Claude**: las tools `Gmail`
+  (`search_threads`, `get_thread`, `list_drafts`, `create_draft`, `update_draft`, `reply`,
+  `send_message`...). Si no están, la persona lo conecta una vez: guiala con
+  `references/conectar-buzon.md` (es un clic y un login de Google).
+- **Correo institucional de Microsoft (Outlook, @frm.utn.edu.ar u otra facultad)** → **siempre
+  el Outlook clásico** de la computadora, como se explica abajo. No busques ni ofrezcas un
+  conector de Microsoft: no se usa.
 
-Microsoft 365 institucional casi siempre exige que un administrador de la facultad
-apruebe el conector una vez; Gmail no tiene esa traba. Todo eso está en
-`references/conectar-buzon.md`.
+### Microsoft: Outlook clásico (modo COM)
 
-### Microsoft sin admin: Outlook clásico (modo COM)
-
-Si el buzón es **Microsoft 365** y el conector oficial está bloqueado (admin consent), hay
-una segunda vía que NO necesita el permiso del administrador, ni token, ni navegador: la
-skill maneja el **Outlook clásico de escritorio** que la persona ya tiene, por su interfaz
-interna. Requiere Windows con Outlook clásico instalado y la cuenta configurada. Los pasos,
+La skill maneja el **Outlook clásico de escritorio** que la persona ya tiene, por su interfaz
+interna. No necesita permiso del administrador, ni token, ni navegador. Requiere Windows con
+Outlook clásico instalado y la cuenta configurada. Los pasos,
 requisitos (incluido quitar el cartel de "acceso por programa") y los scripts (todos
 ocultos) están en `references/outlook-clasico.md` y `assets/outlook-clasico/`. Lo esencial:
 
@@ -196,8 +192,9 @@ La persona elige y arrancás por ahí. Si pide directo "ponete al día con los c
 andá a la opción 1 sin mostrar el menú.
 
 Si todavía no hay correo conectado, no muestres el menú: explicale primero, en palabras
-simples, que para empezar hay que conectar el correo una sola vez, y guiala paso a paso
-con `references/conectar-buzon.md`.
+simples, que para empezar hay que conectar el correo una sola vez, y guiala paso a paso:
+Gmail con `references/conectar-buzon.md`; Microsoft con `revisar-equipo` y `agregar-cuenta`
+(`references/outlook-clasico.md`).
 
 Si el correo está conectado pero la base de respuestas está vacía, contale que todavía no
 tenés respuestas guardadas y proponé armarlas juntos (opción 2): sin eso, no tenés de
@@ -312,7 +309,7 @@ La persona puede pedir un resumen de cómo viene el correo. El informe arma **so
 reales** (si una herramienta falla, se dice; nunca se inventan números). Puede incluir:
 
 - Estado de la bandeja: total, cuántos sin responder, período.
-- Desglose por **tema** y por **facultad/modalidad** (cuántas consultas de cada uno).
+- Desglose por **tema** y por **facultad/modalidad** (cuántos correos de cada uno).
 - En una sesión de "ponerse al día": qué se respondió, qué se derivó y qué quedó pendiente
   (sin datos personales; es un informe operativo, no una lista de personas).
 
@@ -371,8 +368,8 @@ siempre revisa la persona antes de que salga:
 
 ## Recursos
 
-- `references/conectar-buzon.md` — conectar el conector oficial de Gmail (un clic) o de Microsoft 365 (aprobación del admin, con el mensaje para IT). Leer en la opción 3 o si faltan las tools.
-- `references/outlook-clasico.md` — vía Microsoft SIN admin: manejar el Outlook clásico por COM. Leer cuando el buzón es Microsoft y el conector está bloqueado. Scripts en `assets/outlook-clasico/`.
+- `references/conectar-buzon.md` — conectar Gmail con el conector oficial (un clic). Leer si el correo es Gmail y faltan las tools.
+- `references/outlook-clasico.md` — el camino para Microsoft: manejar el Outlook clásico por COM. Leer siempre que el buzón sea Microsoft. Scripts en `assets/outlook-clasico/`.
 - `references/base-de-conocimiento.md` — temas, armado desde correos respondidos, Ámbito/facultad, modalidad, mantenimiento. Leer en la opción 2 y al agregar entradas.
 - `references/redaccion.md` — forma y tono de las respuestas. Leer antes del primer borrador.
 - `assets/plantilla-entrada.md` — formato de cada entrada de la base.

@@ -9,7 +9,7 @@
 
 <!-- Una sección ## por pregunta. Copiá este bloque para cada entrada. -->
 
-## <Pregunta tal como la haría un alumno, ej. "¿Cómo pido la constancia de alumno regular?">
+## <Pregunta o pedido tal como llega al buzón, ej. "¿Cómo pido la constancia de alumno regular?" o "¿Cómo se carga un ajuste razonable?">
 
 - **Ámbito:** <facultad o sede a la que aplica, ej. FRM; "todas" si vale para cualquiera>
 - **Modalidad:** ambas | presencial | virtual

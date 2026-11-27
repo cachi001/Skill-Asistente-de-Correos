@@ -1,22 +1,18 @@
 # Microsoft por Outlook clásico (modo COM)
 
-Esta es la vía para atender un buzón **Microsoft 365 institucional** cuando el conector
-oficial de Microsoft no está disponible (la facultad no deja que cada persona autorice la
-app: aparece "Se necesita la aprobación del administrador"). En vez de eso, la skill
+Este es **el** camino para atender un buzón **Microsoft 365 institucional**. La skill
 maneja el **Outlook clásico de escritorio** que la persona ya tiene abierto, por su
-interfaz interna (COM), como lo haría una macro.
+interfaz interna (COM), como lo haría una macro. No se usa ningún conector de Microsoft.
 
-**No usa token, no abre el navegador, no necesita el consentimiento del admin, es gratis.**
+**No usa token, no abre el navegador, no necesita el permiso del administrador, es gratis.**
 
 ## Cuándo se usa esta vía
 
-- El buzón es Microsoft 365 / Outlook (no Gmail).
-- El conector oficial de Microsoft está bloqueado (admin consent) — ver `conectar-buzon.md`.
+- El buzón es Microsoft 365 / Outlook (no Gmail). Siempre.
 - La persona tiene **Outlook CLÁSICO** instalado en una PC Windows, con su cuenta
   configurada. (El "Outlook nuevo" / `olk.exe` NO sirve: no tiene COM.)
 
-Si el buzón es Gmail, usá el conector oficial (más simple). Esta vía es solo para
-Microsoft sin admin consent.
+Si el buzón es Gmail, usá el conector oficial de Gmail (`conectar-buzon.md`).
 
 ## Requisitos (una sola vez)
 

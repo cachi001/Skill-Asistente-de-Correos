@@ -270,8 +270,10 @@ function Correo-DeRemitente($m) {
 function Estado-Respuesta($m) {
   try {
     $v = $m.PropertyAccessor.GetProperty("http://schemas.microsoft.com/mapi/proptag/0x10810003")
-    if ($v -eq 102 -or $v -eq 103) { return "respondido" }
-    if ($v -eq 104) { return "reenviado" }
+    $cuando = ""
+    try { $t = $m.PropertyAccessor.GetProperty("http://schemas.microsoft.com/mapi/proptag/0x10820040"); if ($t) { $cuando = " el " + ([datetime]$t).ToLocalTime().ToString("dd/MM/yyyy") } } catch {}
+    if ($v -eq 102 -or $v -eq 103) { return "respondido$cuando" }
+    if ($v -eq 104) { return "reenviado$cuando" }
   } catch {}
   return ""
 }

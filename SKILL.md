@@ -155,7 +155,9 @@ ocultos) están en `references/outlook-clasico.md` y `assets/outlook-clasico/`. 
   hacer clic; cuando diga que terminó, corré `esperar-buzon` (le muestra una barra mientras
   Outlook baja los correos).
 - **Ponerse al día:** `ponerse-al-dia` trae en una sola pasada lo que nadie respondió, agrupado
-  por persona y tema, con fecha. Es mucho más rápido que listar y leer uno por uno.
+  por persona y tema, con fecha. Es mucho más rápido que listar y leer uno por uno. Si hay
+  planilla de seguimiento, cargala en el mismo paso (`references/planilla.md`, "Cuándo se
+  escribe") y dá el link al final.
 - **Cómo se respondió antes:** `indexar-enviados` recorre los enviados una sola vez (las
   siguientes solo suma lo nuevo) y `buscar-respuestas` encuentra al instante lo parecido.
 - **Solo lectura:** si la persona dice que un buzón es solo para mirar, corré

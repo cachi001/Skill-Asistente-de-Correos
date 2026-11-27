@@ -101,9 +101,9 @@ filas vacías, colores que no coinciden).
   Derivado lila, No requiere gris.
 - Configuración regional Argentina (es_AR): en las fórmulas los argumentos van con `;`.
 - Las listas desplegables cubren **solo las filas con datos** (si no, aparecen flechitas en
-  todas las filas vacías). Al agregar un correo, insertá la fila 5 heredando el formato de
-  la de abajo (`insertDimension` con `inheritFromBefore: false`): así se lleva la lista y
-  los colores.
+  todas las filas vacías). Por eso las filas nuevas se insertan dentro de la tabla (ver
+  "Cuándo se escribe").
+- "Qué pidió" va con ajuste de texto (se ve completo) y todo centrado en vertical.
 - En Pendientes, la primera columna es **Días esperando**, para que se vea sin moverse. Se
   lee como texto ("Hoy", "1 día", "3 días", con el formato de número
   `[=0]"Hoy";[=1]"1 día";0" días"`) y lleva color según la demora: verde hasta 1 día,
@@ -123,11 +123,31 @@ dejar nada afuera, en este orden:
 4. Qué se escribe solo de acá en adelante y qué puede tocar ella.
 Recién después, preguntá si quiere cambiar algo.
 
-## Cuándo se escribe
+## Cuándo se escribe: cada vez que se usa la skill
 
-- Al ponerse al día: una fila por cada correo nuevo (insertada arriba), con Estado "Sin
-  responder" o "Para revisar".
-- Al enviar o derivar: se actualizan Estado, Respondido y Notas de esa fila.
-- Nunca se borran filas.
+No hay nada automático en segundo plano: la hoja Seguimiento se carga **cuando la persona usa
+la skill** (por ejemplo "ponete al día"). Pendientes, Resumen y Días esperando se actualizan
+solos porque son fórmulas.
+
+Al ponerse al día con planilla (`~/.correos-tup/planilla.json` existe):
+1. Corré `ponerse-al-dia -Incluir respondidos` (solo lee; no marca nada). Los ya contestados
+   desde Outlook vienen como `[respondido el dd/mm/aaaa]`: esa es la fecha de Respondido.
+2. Leé Seguimiento (`get_values` de A4:M) y quedate solo con los correos que **no están**
+   (mismo correo y mismo "Qué pidió", o misma persona y misma fecha). Los que ya están y
+   cambiaron de estado (por ejemplo ahora respondidos), actualizá Estado, Respondido y Notas.
+3. Insertá las filas nuevas **dentro** de la tabla (`insertDimension` desde la fila 6,
+   `inheritFromBefore: true`): así heredan las listas con estilo chip y los colores.
+4. Escribí los datos y ordená la tabla por Fecha, del más nuevo al más viejo (`sortRange`
+   sobre A5:M hasta la última fila, columna A descendente).
+5. Clasificá cada fila: Tema, Prioridad, Revisión y Estado (respondido → Enviado; un
+   "gracias" o un aviso → No requiere; el resto → Sin responder, o Para revisar si ya armaste
+   la respuesta). Escribí "Qué pidió" en una línea, sin DNI ni legajo.
+6. Miralo en pantalla y contale a la persona qué se cargó, con el link.
+
+Al enviar o derivar: se actualizan Estado, Respondido y Notas de esa fila. Nunca se borran
+filas.
+
+Probado el 27/11/2026 con Tec Programacion (35 correos reales de 3 días, en solo lectura:
+35 sin leer antes y después): "Seguimiento de correos - Tec Programacion".
 
 Ejemplo armado y probado (con datos inventados): "Seguimiento de correos (ejemplo)", 27/11/2026.

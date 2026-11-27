@@ -4,7 +4,7 @@
 
 **Ayuda a responder los correos de un buzón institucional o de Gmail de la Tecnicatura Universitaria en Programación (TUP, UTN) desde Claude Code, sea cual sea su uso: lee lo que llegó, lo clasifica, aprende de cómo ya se respondió y deja las respuestas listas para revisar y enviar. También atiende buzones compartidos.**
 
-![version](https://img.shields.io/badge/versión-0.6.6-1f5fa8)
+![version](https://img.shields.io/badge/versión-0.6.7-1f5fa8)
 ![licencia](https://img.shields.io/badge/licencia-Apache--2.0-1a7f45)
 ![plataforma](https://img.shields.io/badge/Claude%20Code-terminal%20y%20escritorio-6b7684)
 

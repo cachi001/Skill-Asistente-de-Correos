@@ -222,7 +222,8 @@ tools para escribir en una planilla de Google (un conector o MCP de Google Sheet
 agregar filas y editar celdas). El conector de Google Drive solo no alcanza: crea archivos
 pero no edita celdas.
 - **Hay acceso** → decile "Tengo acceso a Google Sheets, puedo llevar la planilla de los
-  correos" y preguntale si quiere usarla.
+  correos" y preguntale si quiere usarla. Cómo es (hojas Seguimiento, Pendientes, Resumen con
+  gráficos y Listas; columnas y colores) está en `references/planilla.md`.
 - **No hay** → decile en simple que por ahora la planilla queda guardada en la computadora y
   que para tenerla en Google Sheets hay que conectarlo una vez. No lo des por hecho ni
   inventes que se guardó.

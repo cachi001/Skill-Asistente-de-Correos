@@ -67,9 +67,19 @@ Preguntale a la persona cuántas facultades atiende antes de elegir la estructur
    - Marcá `Ámbito` (facultad) y `Modalidad` (presencial/virtual/ambas). Si cambia según
      una u otra, poné las versiones en "Diferencias por facultad/modalidad".
    - Todo dato con vencimiento (fechas, links de formularios, montos) va en `Vigencia`.
-4. Mostrale a la persona **una categoría por vez**: título de cada entrada, ámbito,
-   modalidad y respuesta. Pedí OK, correcciones o "esta no va". Recién con el OK escribí el
-   archivo y poné `Validado: <fecha> por <persona>`.
+4. **No guardes nada solo: proponé y preguntá, con tus sugerencias.** Mostrale **un tema
+   por vez** (varias entradas juntas, no de a una) con la pregunta interactiva. Por cada
+   entrada: lo que se respondió y de qué correo salió (fecha y quién), y **tu sugerencia**
+   concreta cuando veas algo para mejorar. Por ejemplo:
+   - "Esta respuesta no dice el horario: ¿lo agrego?"
+   - "La fecha vence el 30/06/2027: la marco para avisarte."
+   - "Hay dos respuestas distintas: te recomiendo la del 20/11 porque es la más nueva."
+   - "Le sumaría el link del formulario que mandaste el 12/11."
+
+   La opción recomendada va primera ("Guardar con mi sugerencia (Recomendado)" · "Guardar
+   como se respondió" · "Corregir" · "No va"). Lo que ya está claro en los enviados se
+   propone listo para aceptar con un clic, para que validar sea rápido; pero lo decide ella.
+   Recién con su respuesta escribí el archivo y poné `Validado: <fecha> por <persona>`.
 5. Los temas con un solo correo no alcanzan para una entrada: listalos aparte como "vistos
    una vez" y preguntá si quiere cargarlos igual.
 

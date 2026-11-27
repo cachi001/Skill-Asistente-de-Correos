@@ -4,7 +4,7 @@
 
 **Ayuda a responder los correos de un buzón institucional o de Gmail de la Tecnicatura Universitaria en Programación (TUP, UTN) desde Claude Code, sea cual sea su uso: lee lo que llegó, lo clasifica, aprende de cómo ya se respondió y deja las respuestas listas para revisar y enviar. También atiende buzones compartidos.**
 
-![version](https://img.shields.io/badge/versión-0.6.0-1f5fa8)
+![version](https://img.shields.io/badge/versión-0.6.1-1f5fa8)
 ![licencia](https://img.shields.io/badge/licencia-Apache--2.0-1a7f45)
 ![plataforma](https://img.shields.io/badge/Claude%20Code-terminal%20y%20escritorio-6b7684)
 
@@ -59,7 +59,8 @@ Cada entrada lleva su **Ámbito** (facultad), **Modalidad** y **Tono sugerido**.
 
 Necesitás:
 
-- **Claude Code** instalado (terminal o app de escritorio), con tu sesión iniciada.
+- **Claude Code** (terminal o app de escritorio), **Codex** u **OpenCode**, con tu sesión
+  iniciada. Gmail funciona solo desde Claude Code; el Outlook institucional, desde los tres.
 - **Node.js**, para el comando de instalación (`npx`).
 - Según tu correo:
   - **Gmail**: el conector de Gmail activado. En Claude Code se activa en claude.ai, en
@@ -87,6 +88,16 @@ npx skills add https://github.com/cachi001/Skill-Asistente-de-Correos -g -a clau
 
 Reiniciá Claude Code y listo. Para comprobar que quedó instalada, escribí `/` y buscá
 **tup-asistente-correos**, o pedile directamente «ponete al día con los correos».
+
+**En Codex u OpenCode** es el mismo comando, cambiando el final:
+
+```bash
+npx skills add https://github.com/cachi001/Skill-Asistente-de-Correos -g -a codex opencode -y
+```
+
+- **OpenCode:** la primera vez te pregunta si lo dejás usar la carpeta de la skill: aceptá.
+- **Codex:** para manejar Outlook necesita el modo de acceso completo (en su modo normal
+  bloquea los programas). La skill te lo explica y te pide permiso antes.
 
 Para **actualizarla** más adelante:
 

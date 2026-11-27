@@ -90,16 +90,23 @@ ajustá estas tres cosas:
 | | Claude Code | OpenCode | Codex |
 |---|---|---|---|
 | Carpeta de la skill | `~/.claude/skills/tup-asistente-correos` | `~/.agents/skills/tup-asistente-correos` | `~/.agents/skills/tup-asistente-correos` |
-| Preguntas interactivas | `AskUserQuestion` | `question` | la de preguntas si la tenés; si no, lista numerada |
+| Preguntas interactivas | `AskUserQuestion` | `question` | `request_user_input` |
 | Gmail | conector de Gmail de Claude | no hay conector: solo Outlook clásico | no hay conector: solo Outlook clásico |
+| Permisos | aceptar cuando pregunta | aceptar el acceso a la carpeta de la skill | acceso completo (ver abajo) |
+
+Si la herramienta de preguntas no está disponible en ese momento, preguntá con una lista
+numerada.
 
 - Los scripts están en `assets/outlook-clasico/` dentro de la carpeta donde está este
   SKILL.md, sea cual sea el programa.
 - Si el correo es Gmail y no estás en Claude Code, decilo claro: "Desde este programa no
   puedo conectarme a Gmail; desde Claude Code sí". No intentes otra forma.
-- En Codex, si un comando que habla con Outlook falla por permisos del entorno, explicale
-  que hay que darle a Codex permiso para usar la computadora completa (modo de acceso total),
-  y pedile permiso antes.
+- **OpenCode** pide permiso para entrar a la carpeta de la skill (está fuera del proyecto).
+  Avisale antes: "Te va a preguntar si me dejás usar la carpeta de la skill: aceptá".
+- **Codex** en su modo normal bloquea los scripts (probado: "blocked by policy"). Para usar
+  Outlook hace falta el modo de acceso completo. Explicale qué significa (Codex puede correr
+  programas en la computadora, siempre bajo las reglas de esta skill) y pedile permiso con la
+  pregunta interactiva antes de que lo active.
 
 ---
 

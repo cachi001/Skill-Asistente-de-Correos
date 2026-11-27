@@ -55,53 +55,41 @@ acceso-al-campus · becas-y-aranceles · contactos-y-derivaciones
 
 Cada entrada lleva su **Ámbito** (facultad), **Modalidad** y **Tono sugerido**. **Nunca** guarda datos personales ni contraseñas. Crece solo con preguntas nuevas distintas (se estanca, queda navegable), y lo que no está validado sale con un hueco `[COMPLETAR]` en vez de un dato inventado.
 
-## 🚀 Instalación
+## Antes de empezar
 
-Una skill de Claude Code es una carpeta con instrucciones que va **dentro de tu carpeta de skills** (`~/.claude/skills/`). No se instala nada más: no hay servidor, ni base de datos, ni dependencias que compilar.
+Necesitás:
 
-**Antes de empezar** necesitás tener [Claude Code](https://claude.com/claude-code) instalado y haber iniciado sesión al menos una vez.
+- **Claude Code** instalado (terminal o app de escritorio), con tu sesión iniciada.
+- **Node.js**, para el comando de instalación (`npx`).
+- Según tu correo:
+  - **Gmail**: el conector de Gmail activado. En Claude Code se activa en claude.ai, en
+    Configuración, Conectores, con la misma cuenta con la que usás Claude Code.
+  - **Microsoft 365**: una PC con Windows y el **Outlook clásico** de escritorio instalado.
+    Si tu cuenta todavía no está en Outlook, la skill te abre la ventana para agregarla.
+- **El conector de Google Sheets** (opcional), para llevar la planilla de seguimiento de
+  correos. Sin él, la planilla queda guardada en tu computadora.
 
-### Opción A — con git (recomendada)
+## Instalación
 
-Clonás el repositorio directamente dentro de la carpeta de skills, con el nombre `tup-asistente-correos`:
+En una terminal:
 
 ```bash
-git clone https://github.com/cachi001/Skill-Asistente-de-Correos.git \
-  ~/.claude/skills/tup-asistente-correos
+npx skills add https://github.com/cachi001/Skill-Asistente-de-Correos -g -a claude-code -y
 ```
 
-En Windows (PowerShell), la ruta es `$env:USERPROFILE\.claude\skills\tup-asistente-correos`.
+Reiniciá Claude Code y listo. Para comprobar que quedó instalada, escribí `/` y buscá
+**tup-asistente-correos**, o pedile directamente «ponete al día con los correos».
 
-Para **actualizar** más adelante:
+Para **actualizarla** más adelante:
 
 ```bash
-cd ~/.claude/skills/tup-asistente-correos
-git pull
+npx skills update tup-asistente-correos -g -y
 ```
 
-### Opción B — sin git
-
-Descargás el repositorio como ZIP (botón verde **Code → Download ZIP** en GitHub), lo descomprimís, y copiás la carpeta resultante a `~/.claude/skills/` con el nombre **`tup-asistente-correos`**. La estructura final tiene que quedar así:
-
-```
-~/.claude/skills/tup-asistente-correos/
-├── SKILL.md
-├── references/
-└── assets/
-```
-
-### Verificar que quedó instalada
-
-Abrí Claude Code y escribí `/` — la skill tiene que aparecer en la lista como **tup-asistente-correos**. O simplemente pedíle: «ponete al día con los correos de la tecnicatura» y debería activarse sola.
-
-### Primera vez: conectar el buzón
-
-La skill no guarda contraseñas. La primera vez te guía según tu caso:
-
-- **Gmail** → te pide autorizar el conector oficial de Google (un login, un clic). Listo.
-- **Microsoft 365 (Outlook clásico)** → alcanza con tener el **Outlook de escritorio abierto y con tu sesión iniciada**. La skill le habla a ese Outlook; no necesita token ni permiso del administrador. (Detalle técnico en [`references/outlook-clasico.md`](references/outlook-clasico.md).)
-
-Después, la skill crea sola la carpeta de la base de conocimiento en `~/.correos-tup/conocimiento/` la primera vez que la necesita.
+La primera vez que la uses, la skill revisa qué correos tenés conectados, te pregunta para
+qué usás el buzón y crea sola la carpeta de la base de respuestas en
+`~/.correos-tup/conocimiento/`. No te pide contraseñas: si hay que iniciar sesión, la
+escribís vos en la ventana de Google o de Microsoft.
 
 ## 💬 Uso
 

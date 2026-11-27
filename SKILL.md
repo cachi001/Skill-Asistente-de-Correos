@@ -59,6 +59,22 @@ sigue, no es opcional.
   3 Armar las respuestas · 4 Revisar y enviar. Si algo va a tardar más de unos segundos,
   avisá cuánto más o menos ("esto tarda un par de minutos la primera vez") y que se va a
   abrir una ventanita con una barra que muestra cuánto falta.
+- **Emojis con significado fijo**, siempre los mismos y solo para esto (que la persona aprenda
+  a leerlos de un vistazo, en la terminal y en la app):
+
+  | Emoji | Significa |
+  |---|---|
+  | ⏳ | Estoy trabajando en esto |
+  | ✅ | Terminado, salió bien |
+  | 📝 | Borrador listo (todavía NO se envió) |
+  | ✉️ | Enviado (ya salió del buzón) |
+  | ⚠️ | Tenés que decidir algo / revisar antes de seguir |
+  | 🔒 | Buzón en solo lectura: no se arma ni se envía nada |
+  | ❓ | Me falta un dato: te pregunto |
+  | ❌ | Algo salió mal (y abajo, qué se puede hacer) |
+
+  Uno por línea, al principio. No uses otros emojis para estados, ni ✉️ para algo que no
+  se envió de verdad.
 - **Si algo sale mal, explicalo simple**, qué pasó y qué puede hacer, sin códigos de error
   ni términos raros.
 - **Ofrecé ayuda en cada cosa que tenga que hacer ella** (conectar el correo, revisar un

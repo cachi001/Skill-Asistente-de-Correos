@@ -1,34 +1,46 @@
-# instalar-outlook.ps1 - Deja la PC lista con el Outlook CLASICO (el que la skill sabe manejar).
-# Usa la herramienta oficial de Microsoft (Office Deployment Tool) e instala SOLO Outlook,
-# sin Word, Excel ni nada mas. La persona ve la ventana de Microsoft con su propia barra.
+# instalar-outlook.ps1 - Instala el Outlook CLASICO (el que la skill maneja) con la herramienta
+# oficial de Microsoft (Office Deployment Tool). Es la misma instalacion que se probo y funciono
+# el 25/11/2026 (ver docs/Investigacion-y-Solucion-Correos-TUP.pdf, seccion 5):
+#   - Producto Microsoft 365 Apps (O365ProPlusRetail), se activa con la cuenta institucional (A3).
+#   - Excluye el Outlook NUEVO (OutlookForWindows): si no, queda el nuevo por defecto.
+#   - Si la PC tiene un Office viejo (2016/2019 MSI) lo reemplaza (RemoveMSI) por el actual
+#     completo, para no perder Word ni Excel. Sin Office previo, instala SOLO Outlook.
+#   - Los archivos van a C:\Users\Public (el instalador de Microsoft no lee carpetas privadas).
+#   - Baja el paquete directo de Microsoft (sin paquete local: un paquete parcial da error 1603).
 #
 #   ... instalar-outlook.ps1 -Revisar          solo dice que hay en la PC (no cambia nada)
-#   ... instalar-outlook.ps1                   instala el clasico (Windows pide permiso: "Si")
+#   ... instalar-outlook.ps1                   instala (Windows pide permiso: "Si")
 #   ... instalar-outlook.ps1 -VolverAlClasico  apaga el interruptor "Nuevo Outlook"
 #   ... instalar-outlook.ps1 -SoloPreparar     baja y verifica el instalador, sin instalar
 #
-# Tarda entre 5 y 15 minutos segun internet: la skill lo lanza en segundo plano.
+# Tarda de 10 a 25 minutos segun internet: la skill lo lanza en segundo plano.
 param([switch]$Revisar, [switch]$VolverAlClasico, [switch]$SoloPreparar)
 . "$PSScriptRoot\buzon-comun.ps1"
 $ProgressPreference = "SilentlyContinue"
 $e = Estado-Outlook
 
-function Situacion($e) {
+# Office viejo instalado con MSI (2010-2019): hay que reemplazarlo, no se puede sumar al lado
+$msi = @(Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*",
+                         "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" -ErrorAction SilentlyContinue |
+         Where-Object { $_.DisplayName -match '^Microsoft Office (Professional|Standard|Hogar|Home|Plus|Profesional)' -and $_.WindowsInstaller -eq 1 })
+$hayOfficeViejo = $msi.Count -gt 0
+
+function Situacion {
   if ($e.clasico -and $e.usaNuevo) { return "USA EL NUEVO" }
   if ($e.clasico) { return "CLASICO" }
-  if ($e.office) { return "OFFICE SIN OUTLOOK" }
+  if ($e.office -or $hayOfficeViejo) { return "OFFICE SIN OUTLOOK" }
   if ($e.nuevo) { return "SOLO EL NUEVO" }
   return "NINGUNO"
 }
-$sit = Situacion $e
+$sit = Situacion
 
 if ($Revisar) {
   switch ($sit) {
     "CLASICO"            { Write-Output ("CLASICO: el Outlook clasico esta instalado ({0}). {1}" -f $e.clasico, $(if ($e.perfil) { "Ya tiene cuenta configurada." } else { "Falta agregar la cuenta: agregar-cuenta.ps1" })) }
     "USA EL NUEVO"       { Write-Output "USA EL NUEVO: el clasico esta instalado pero el interruptor 'Nuevo Outlook' esta prendido, asi que abre el nuevo. Solucion: instalar-outlook.ps1 -VolverAlClasico" }
-    "OFFICE SIN OUTLOOK" { Write-Output ("OFFICE SIN OUTLOOK: hay Office ({0}) pero sin Outlook. No lo instalo desde aca para no tocar Word o Excel. Se agrega desde Configuracion > Aplicaciones > Microsoft 365 > Modificar, o con quien administra la PC." -f $e.office) }
-    "SOLO EL NUEVO"      { Write-Output "SOLO EL NUEVO: solo esta el Outlook nuevo, que la skill no puede manejar. Solucion: instalar el clasico con instalar-outlook.ps1 (el nuevo puede quedar)." }
-    "NINGUNO"            { Write-Output "NINGUNO: no hay Outlook. Solucion: instalar el clasico con instalar-outlook.ps1" }
+    "OFFICE SIN OUTLOOK" { Write-Output "OFFICE SIN OUTLOOK: hay Office pero sin Outlook clasico. Solucion: instalar-outlook.ps1 (deja Office actualizado con Outlook; Word y Excel quedan)." }
+    "SOLO EL NUEVO"      { Write-Output "SOLO EL NUEVO: solo esta el Outlook nuevo, que la skill no puede manejar. Solucion: instalar-outlook.ps1 (instala el clasico)." }
+    "NINGUNO"            { Write-Output "NINGUNO: no hay Outlook. Solucion: instalar-outlook.ps1 (instala solo el Outlook clasico)." }
   }
   exit 0
 }
@@ -36,20 +48,18 @@ if ($Revisar) {
 if ($VolverAlClasico) {
   if (-not $e.clasico) { Write-Output "NO: no hay Outlook clasico instalado. Primero hay que instalarlo (instalar-outlook.ps1)."; exit 1 }
   $k = 'HKCU:\Software\Microsoft\Office\16.0\Outlook\Preferences'
-  if (-not (Test-Path $k)) { New-Item -Path $k | Out-Null }
+  if (-not (Test-Path $k)) { New-Item -Path $k | Out-Null }   # sin -Force: no borrar valores existentes
   Set-ItemProperty -Path $k -Name UseNewOutlook -Value 0 -Type DWord
   Write-Output "LISTO: el interruptor 'Nuevo Outlook' quedo apagado. Si el Outlook nuevo esta abierto, cerralo; la proxima vez abre el clasico."
   exit 0
 }
 
 if ($sit -eq "CLASICO" -or $sit -eq "USA EL NUEVO") { Write-Output ("YA ESTA: el Outlook clasico ya esta instalado ({0}). No hace falta instalar nada." -f $e.clasico); exit 0 }
-if ($sit -eq "OFFICE SIN OUTLOOK") {
-  Write-Output ("NO INSTALO: hay Office ({0}) pero sin Outlook. Instalar desde aca podria sacar Word o Excel. Agregalo desde Configuracion > Aplicaciones > Microsoft 365 > Modificar, o pediselo a quien administra la PC." -f $e.office)
-  exit 1
-}
 
 # 1. Bajar el instalador oficial (con barra) y comprobar que es de Microsoft
-$dir = Carpeta-Datos "instalador"
+$dir = "C:\Users\Public\correos-tup\instalador"
+if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
+Get-ChildItem $dir -Directory -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue   # nada de paquetes viejos al lado
 $setup = Join-Path $dir "setup.exe"
 $url = "https://officecdn.microsoft.com/pr/wsus/setup.exe"
 Progreso-Iniciar "Instalando Outlook"
@@ -57,10 +67,9 @@ Progreso-Iniciar "Instalando Outlook"
 $wc = New-Object Net.WebClient
 try {
   $tarea = $wc.DownloadFileTaskAsync($url, $setup)
-  $total = 7000000
   while (-not $tarea.IsCompleted) {
     $van = 0; if (Test-Path $setup) { $van = (Get-Item $setup).Length }
-    Progreso-Avanzar ([math]::Min(99, [int](100 * $van / $total))) 100 "Bajando el instalador de Microsoft"
+    Progreso-Avanzar ([math]::Min(99, [int](100 * $van / 7000000))) 100 "Bajando el instalador de Microsoft"
     Start-Sleep -Milliseconds 200
   }
   if ($tarea.IsFaulted) { throw $tarea.Exception }
@@ -77,41 +86,50 @@ if ($firma.Status -ne "Valid" -or $firma.SignerCertificate.Subject -notmatch "Mi
   exit 1
 }
 
-# 2. Configuracion: solo Outlook, en el idioma de Windows
+# 2. Configuracion (la probada). Sin Office previo: solo Outlook. Con Office: completo.
 $bits = if ([Environment]::Is64BitOperatingSystem) { "64" } else { "32" }
-$fuera = "Access","Excel","Groove","Lync","OneDrive","OneNote","PowerPoint","Publisher","Teams","Word","Bing"
+$fuera = @("OutlookForWindows", "Groove", "Lync")
+$completo = [bool]($e.office -or $hayOfficeViejo)
+if (-not $completo) { $fuera += "Access","Excel","OneDrive","OneNote","PowerPoint","Publisher","Teams","Word","Bing" }
+$logs = Join-Path $dir "logs"
 $xml = @"
 <Configuration>
   <Add OfficeClientEdition="$bits" Channel="Current">
     <Product ID="O365ProPlusRetail">
-      <Language ID="MatchOS" Fallback="es-es" />
+      <Language ID="es-es" />
 $(($fuera | ForEach-Object { "      <ExcludeApp ID=""$_"" />" }) -join "`r`n")
     </Product>
   </Add>
+$(if ($hayOfficeViejo) { "  <RemoveMSI />`r`n" })  <Property Name="FORCEAPPSHUTDOWN" Value="TRUE" />
+  <Property Name="SharedComputerLicensing" Value="0" />
   <Display Level="Full" AcceptEULA="TRUE" />
+  <Logging Level="Standard" Path="$logs" />
 </Configuration>
 "@
-$cfg = Join-Path $dir "solo-outlook.xml"
+$cfg = Join-Path $dir "configuracion.xml"
 [IO.File]::WriteAllText($cfg, $xml)
+$que = if ($hayOfficeViejo) { "reemplaza el Office viejo por el actual (Outlook clasico, Word, Excel y PowerPoint)" } elseif ($completo) { "suma Outlook clasico al Office que ya hay" } else { "instala solo el Outlook clasico" }
 
 if ($SoloPreparar) {
-  Write-Output ("PREPARADO: instalador de Microsoft verificado ({0}) y configuracion en {1}. No se instalo nada." -f $firma.SignerCertificate.Subject.Split(',')[0], $cfg)
+  Write-Output ("PREPARADO: instalador de Microsoft verificado ({0}). Va a: {1}. Configuracion en {2}. No se instalo nada." -f $firma.SignerCertificate.Subject.Split(',')[0], $que, $cfg)
   exit 0
 }
 
-# 3. Instalar: Windows pide permiso y aparece la ventana de Microsoft con su barra
+# 3. Instalar: Windows pide permiso ("Si") y aparece la ventana de Microsoft con su barra
 try {
   $p = Start-Process -FilePath $setup -ArgumentList "/configure `"$cfg`"" -WorkingDirectory $dir -Verb RunAs -PassThru
 } catch {
-  Write-Output "CANCELADO: no se acepto el permiso de Windows. Cuando quieras, lo volvemos a intentar y en el cartel tocas 'Si'."
+  Write-Output "CANCELADO: no se acepto el permiso de Windows. Cuando quieras lo volvemos a intentar y en el cartel tocas 'Si'."
   exit 1
 }
-$p.WaitForExit()
+$p.WaitForExit()   # con /configure, setup.exe espera a que la instalacion termine
+# Por las dudas, darle unos minutos a que aparezca OUTLOOK.EXE
+for ($i = 0; $i -lt 20 -and -not (Estado-Outlook).clasico; $i++) { Start-Sleep -Seconds 15 }
 $e = Estado-Outlook
 if ($e.clasico) {
-  Write-Output ("INSTALADO: el Outlook clasico quedo en {0}. Siguiente paso: agregar-cuenta.ps1 para iniciar sesion." -f $e.clasico)
+  Write-Output ("INSTALADO: el Outlook clasico quedo en {0} ({1}). Siguiente paso: agregar-cuenta.ps1 (la primera vez Outlook pide iniciar sesion, y eso activa la licencia)." -f $e.clasico, $que)
   exit 0
 }
 $cod = try { $p.ExitCode } catch { "?" }
-Write-Output ("NO SE INSTALO (codigo {0}). Puede que la ventana de Microsoft se haya cerrado antes o que tu cuenta no incluya Office de escritorio (por ejemplo las A1)." -f $cod)
+Write-Output ("NO SE INSTALO (codigo {0}). Detalle en {1}. Si la cuenta no incluye Office de escritorio (por ejemplo las A1), Microsoft no deja usarlo con esa cuenta." -f $cod, $logs)
 exit 1

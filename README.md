@@ -4,7 +4,7 @@
 
 **Ayuda a responder los correos de un buzón institucional o de Gmail de la Tecnicatura Universitaria en Programación (TUP, UTN) desde Claude Code, sea cual sea su uso: lee lo que llegó, lo clasifica, aprende de cómo ya se respondió y deja las respuestas listas para revisar y enviar. También atiende buzones compartidos.**
 
-![version](https://img.shields.io/badge/versión-0.5.2-1f5fa8)
+![version](https://img.shields.io/badge/versión-0.5.3-1f5fa8)
 ![licencia](https://img.shields.io/badge/licencia-Apache--2.0-1a7f45)
 ![plataforma](https://img.shields.io/badge/Claude%20Code-terminal%20y%20escritorio-6b7684)
 
@@ -64,10 +64,10 @@ Necesitás:
 - Según tu correo:
   - **Gmail**: el conector de Gmail activado. En Claude Code se activa en claude.ai, en
     Configuración, Conectores, con la misma cuenta con la que usás Claude Code.
-  - **Microsoft 365**: una PC con Windows. Si no tenés el **Outlook clásico** (o solo
-    tenés el Outlook nuevo), la skill lo instala por vos con el instalador oficial de
-    Microsoft; vos solo tocás "Sí" en el cartel de Windows. Si tu cuenta no incluye Office
-    de escritorio, igual te arma las respuestas a partir de los correos que pegues en el chat.
+  - **Microsoft 365**: una PC con Windows y una cuenta que incluya Office de escritorio
+    (A3/A5; la A1 no). Si no tenés el **Outlook clásico** (o solo tenés el Outlook nuevo),
+    la skill lo instala por vos con la herramienta oficial de Microsoft; vos solo tocás
+    "Sí" en el cartel de Windows.
 - **El conector de Google Sheets** (opcional), para llevar la planilla de seguimiento de
   correos. Sin él, la planilla queda guardada en tu computadora.
 

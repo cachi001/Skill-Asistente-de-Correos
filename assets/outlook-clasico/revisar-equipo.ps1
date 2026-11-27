@@ -24,7 +24,7 @@ if ($vWeb -and $vLocal -and ([version]$vWeb -gt [version]$vLocal)) {
 $est = Estado-Outlook
 $exe = $est.clasico
 if ($exe) { Linea $true "Outlook clasico instalado" }
-elseif ($est.office) { Linea $false ("Outlook clasico instalado (hay Office sin Outlook: {0})" -f $est.office) "agregarlo desde Configuracion > Aplicaciones > Microsoft 365 > Modificar (no se instala desde aca para no tocar Word/Excel)" }
+elseif ($est.office) { Linea $false ("Outlook clasico instalado (hay Office sin Outlook: {0})" -f $est.office) "instalarlo con instalar-outlook.ps1 (Word y Excel quedan)" }
 elseif ($est.nuevo) { Linea $false "Outlook clasico instalado (solo esta el Outlook nuevo, que no sirve)" "instalarlo con instalar-outlook.ps1" }
 else { Linea $false "Outlook clasico instalado (no hay ningun Outlook)" "instalarlo con instalar-outlook.ps1 (Gmail funciona igual sin Outlook)" }
 if ($exe) { Linea (-not $est.usaNuevo) "Se abre el clasico (interruptor 'Nuevo Outlook' apagado)" "apagarlo con instalar-outlook.ps1 -VolverAlClasico" }

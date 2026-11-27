@@ -82,6 +82,27 @@ sigue, no es opcional.
 
 ---
 
+## En qué programa estás: Claude Code, Codex u OpenCode
+
+La skill funciona en los tres. Fijate en cuál estás (por las herramientas que tenés) y
+ajustá estas tres cosas:
+
+| | Claude Code | OpenCode | Codex |
+|---|---|---|---|
+| Carpeta de la skill | `~/.claude/skills/tup-asistente-correos` | `~/.agents/skills/tup-asistente-correos` | `~/.agents/skills/tup-asistente-correos` |
+| Preguntas interactivas | `AskUserQuestion` | `question` | la de preguntas si la tenés; si no, lista numerada |
+| Gmail | conector de Gmail de Claude | no hay conector: solo Outlook clásico | no hay conector: solo Outlook clásico |
+
+- Los scripts están en `assets/outlook-clasico/` dentro de la carpeta donde está este
+  SKILL.md, sea cual sea el programa.
+- Si el correo es Gmail y no estás en Claude Code, decilo claro: "Desde este programa no
+  puedo conectarme a Gmail; desde Claude Code sí". No intentes otra forma.
+- En Codex, si un comando que habla con Outlook falla por permisos del entorno, explicale
+  que hay que darle a Codex permiso para usar la computadora completa (modo de acceso total),
+  y pedile permiso antes.
+
+---
+
 ## Cómo lee y escribe el correo: dos caminos
 
 La skill no corre un servidor propio. Lo único que puede instalar es el Outlook clásico, y
@@ -169,8 +190,8 @@ Adaptate a lo que diga:
 **Cómo preguntar: siempre con la pregunta interactiva, con tu recomendación, y esperando lo
 que piensa la persona.** Toda pregunta que la persona tenga que contestar (elegir buzón, el
 menú, para qué usa el correo, validar una respuesta, dar permiso para instalar) se hace con
-la herramienta de preguntas interactivas (`AskUserQuestion` en Claude Code), no escrita como
-lista en el chat:
+la herramienta de preguntas interactivas (`AskUserQuestion` en Claude Code, `question` en
+OpenCode; ver la tabla de programas), no escrita como lista en el chat:
 - La opción que recomendás va **primera** y termina en "(Recomendado)".
 - Cada opción explica en una frase **qué pasa si la elige**.
 - El texto de la pregunta se entiende solo (la persona puede ver solo la ventanita): decí

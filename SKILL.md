@@ -89,6 +89,12 @@ ocultos) están en `references/outlook-clasico.md` y `assets/outlook-clasico/`. 
 
 - **Al empezar:** `revisar-equipo` (qué está listo y qué falta, sin cambiar nada). Contale a
   la persona en una línea lo que falte, no la lista entera.
+- **Si no tiene el Outlook clásico, lo instalás vos:** si solo tiene el Outlook nuevo o
+  ninguno, con su OK corré `instalar-outlook` en segundo plano. Instala solo Outlook con el
+  instalador oficial de Microsoft, y ella solo tiene que tocar "Sí" en el cartel de Windows.
+  Si tiene el clásico pero se le abre el nuevo, `instalar-outlook -VolverAlClasico`. Si no se
+  puede instalar (por ejemplo, cuentas A1), usá el plan B: que pegue los correos en el chat
+  y le armás las respuestas para que las mande ella.
 - **Sumar una cuenta:** abrile la ventana con `agregar-cuenta` en lugar de explicarle dónde
   hacer clic; cuando diga que terminó, corré `esperar-buzon` (le muestra una barra mientras
   Outlook baja los correos).

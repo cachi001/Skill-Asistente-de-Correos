@@ -158,6 +158,34 @@ function Borrar-CodigoEnvio([string]$cod) {
 }
 
 # ---------------------------------------------------------------------------
+# Que Outlook hay en la PC (no cambia nada):
+#   clasico  = ruta del OUTLOOK.EXE clasico, o vacio
+#   nuevo    = esta instalado el "Outlook nuevo" (olk, no sirve: no tiene COM)
+#   usaNuevo = el interruptor "Nuevo Outlook" esta prendido (el clasico abre el nuevo)
+#   office   = productos de Office instalados (para no tocarlos al instalar)
+#   perfil   = el clasico ya tiene al menos una cuenta configurada
+# ---------------------------------------------------------------------------
+function Estado-Outlook {
+  $exe = $null
+  try { $exe = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\OUTLOOK.EXE' -ErrorAction Stop).'(default)' } catch {}
+  if (-not ($exe -and (Test-Path $exe))) {
+    $exe = @("$env:ProgramFiles\Microsoft Office\root\Office16\OUTLOOK.EXE",
+             "${env:ProgramFiles(x86)}\Microsoft Office\root\Office16\OUTLOOK.EXE",
+             "$env:ProgramFiles\Microsoft Office\Office16\OUTLOOK.EXE",
+             "${env:ProgramFiles(x86)}\Microsoft Office\Office16\OUTLOOK.EXE") |
+           Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+  }
+  $nuevo = $false
+  try { $nuevo = [bool](Get-AppxPackage -Name Microsoft.OutlookForWindows -ErrorAction Stop) } catch {}
+  $usaNuevo = $false
+  try { $usaNuevo = ((Get-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Outlook\Preferences' -ErrorAction Stop).UseNewOutlook -eq 1) } catch {}
+  $office = ""
+  try { $office = [string](Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\Configuration' -ErrorAction Stop).ProductReleaseIds } catch {}
+  $perfil = [bool](Get-ChildItem 'HKCU:\Software\Microsoft\Office\16.0\Outlook\Profiles' -ErrorAction SilentlyContinue)
+  @{ clasico = [string]$exe; nuevo = $nuevo; usaNuevo = $usaNuevo; office = $office; perfil = $perfil }
+}
+
+# ---------------------------------------------------------------------------
 # Ventanita de progreso para la persona (para lo que tarda). Solo aparece si la tarea
 # dura mas de ~2 segundos. Con total 0 la barra se mueve sin porcentaje.
 # Se desactiva con $env:CORREOS_TUP_SIN_VENTANA = "1".

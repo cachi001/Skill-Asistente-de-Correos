@@ -16,11 +16,27 @@ Si el buzón es Gmail, usá el conector oficial de Gmail (`conectar-buzon.md`).
 
 ## Requisitos (una sola vez)
 
-1. **Windows + Outlook clásico instalado** y con derecho a usarse. Si la cuenta es
-   Microsoft 365 A3/A5 (o cualquier plan con Office de escritorio), se puede instalar el
-   Outlook clásico actual gratis desde `portal.office.com` → "Instalar Office"
-   (o con la herramienta de implementación de Office para forzar el clásico). El plan
-   **A1 NO** incluye Office de escritorio.
+1. **Windows + Outlook clásico instalado.** Fijate primero con `instalar-outlook.ps1 -Revisar`
+   (no cambia nada). Según lo que diga:
+   - `CLASICO` → seguí al paso 2.
+   - `USA EL NUEVO` → el clásico está, pero el interruptor "Nuevo Outlook" lo redirige al
+     nuevo. Con su OK, corré `instalar-outlook.ps1 -VolverAlClasico` (no pide permiso de
+     administrador) y que cierre el Outlook nuevo si está abierto.
+   - `SOLO EL NUEVO` o `NINGUNO` → **instalalo vos**, no le mandes instrucciones. Con su OK,
+     lanzá `instalar-outlook.ps1` **en segundo plano** (tarda de 5 a 15 minutos). Antes
+     decile: "Va a aparecer un cartel de Windows preguntando si permitís cambios: tocá Sí.
+     Después vas a ver la ventana de Microsoft instalando Outlook, con su barra. No hace
+     falta que hagas nada más; te aviso cuando termine." El script baja el instalador
+     oficial de Microsoft (con una barra), comprueba que tenga la firma de Microsoft e
+     instala **solo Outlook**, sin Word ni Excel. El Outlook nuevo puede quedar instalado,
+     no molesta.
+   - `OFFICE SIN OUTLOOK` → no se instala desde acá, porque podría sacar Word o Excel.
+     Explicale que lo agregue desde Configuración > Aplicaciones > Microsoft 365 > Modificar,
+     o que se lo pida a quien administra la PC.
+
+   Si responde `CANCELADO`, no aceptó el cartel de Windows: preguntale si quiere reintentar.
+   Si responde `NO SE INSTALO`, lo más probable es que su cuenta no incluya Office de
+   escritorio (las **A1** no lo incluyen; las A3/A5 sí). Ahí ofrecé el plan B (abajo).
 2. **La cuenta agregada al Outlook clásico** (login + MFA). Se hace una vez. **No le des
    instrucciones a la persona: abrile vos la ventana** con `agregar-cuenta.ps1` (abre Outlook si
    está cerrado y dispara "Agregar cuenta"). Lanzalo aparte, sin esperar, porque la ventana
@@ -29,8 +45,10 @@ Si el buzón es Gmail, usá el conector oficial de Gmail (`conectar-buzon.md`).
    Después decile solo esto: "Te abrí la ventana de Outlook. Poné el correo, tocá Conectar,
    la contraseña y la verificación del celular. Avisame cuando diga que está lista."
    La contraseña la escribe la persona en la ventana de Microsoft; nunca se la pidas.
-3. **Abrir Outlook una vez a mano** después de instalarlo (aceptar condiciones, iniciar
-   sesión). Si no, el modo automático da el error `0x80080005` (Outlook nunca arrancó).
+   Si Outlook está recién instalado y no tiene ninguna cuenta, `agregar-cuenta.ps1` solo lo
+   abre: Outlook muestra de entrada su pantalla para poner el correo.
+3. **Que Outlook haya abierto una vez** y aceptado las condiciones (pasa solo en el paso 2).
+   Si no, el modo automático da el error `0x80080005` (Outlook nunca arrancó).
 4. **Quitar el cartel de "acceso por programa"** (una vez, con permiso de administrador):
    en `HKCU\Software\Policies\Microsoft\Office\16.0\Outlook\Security` poner
    `AdminSecurityMode`=3 y todos los `PromptOOM*`=**2** (2 = aprobar siempre; 1 = preguntar
@@ -54,7 +72,10 @@ El `-Numero` es el que devuelve el listado (orden: más nuevos primero).
 
 - **Chequeo al empezar:** `... revisar-equipo.ps1` — versión de la skill (y si hay una nueva),
   Outlook instalado y abierto, cartel de acceso, buzones y cuáles están en solo lectura, base de
-  respuestas e índices. No cambia nada ni abre Outlook.
+  respuestas e índices. No cambia nada ni abre Outlook. Distingue si hay solo el Outlook
+  nuevo, ninguno, Office sin Outlook, o el interruptor "Nuevo Outlook" prendido.
+- **Instalar o recuperar el clásico:** `... instalar-outlook.ps1 [-Revisar | -VolverAlClasico]`
+  (ver Requisitos, paso 1). Instalar va siempre en segundo plano y con el OK de la persona.
 
 - **Ponerse al día (lo recomendado, una sola pasada):**
   `... ponerse-al-dia.ps1 -Buzon "Tec Programacion" [-Dias 14] [-SoloNuevos] [-Largo 700]`
@@ -115,8 +136,17 @@ borradores desde la base de conocimiento → mostrar cada borrador completo → 
 borrador → enviar **solo** con el OK para ese correo. La clasificación por tema, facultad
 y modalidad la hace la skill leyendo la base; estos scripts solo leen y escriben en Outlook.
 
-## Límite para escalar al equipo
+## Plan B: si no se puede tener el Outlook clásico
 
-Solo sirve en una PC con el Outlook clásico instalado y la cuenta configurada. Un colega
-con cuenta que no incluya Office de escritorio (p. ej. A1) no puede por esta vía: ahí el
-camino es el conector oficial con el consentimiento del admin, o Gmail.
+Pasa si la cuenta no incluye Office de escritorio (por ejemplo las A1), si la PC no es
+Windows o si no le dejan instalar programas. La skill no puede leer la bandeja sola, pero
+sí ayudar a responder:
+
+1. La persona copia el correo (o varios) desde el Outlook que tenga, incluso el de la web,
+   y lo pega en el chat.
+2. La skill lo trata igual que uno leído de la bandeja: lo clasifica, busca en la base de
+   respuestas y arma la respuesta escrita, con su fuente.
+3. La persona la copia y la envía desde su Outlook. La skill no envía nada en este modo.
+
+Explicáselo en simple y sin hacerlo sentir un problema: "Con tu cuenta no puedo entrar a la
+bandeja, pero si me pegás el correo acá te armo la respuesta para que la mandes vos".

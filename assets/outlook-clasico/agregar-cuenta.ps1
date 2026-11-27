@@ -6,12 +6,20 @@
 #
 # La ventana es modal: este script queda esperando hasta que la persona la cierre.
 # Por eso la skill lo lanza aparte, sin esperar (ver references/outlook-clasico.md).
+. "$PSScriptRoot\buzon-comun.ps1"
 $ErrorActionPreference = "Stop"
-$exe = @(
-  "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE",
-  "C:\Program Files (x86)\Microsoft Office\root\Office16\OUTLOOK.EXE"
-) | Where-Object { Test-Path $_ } | Select-Object -First 1
-if (-not $exe) { Write-Output "ERROR: no encuentro el Outlook clasico instalado."; exit 1 }
+$est = Estado-Outlook
+$exe = $est.clasico
+if (-not $exe) { Write-Output "ERROR: no hay Outlook clasico instalado. Primero: instalar-outlook.ps1"; exit 1 }
+if ($est.usaNuevo) { Write-Output "ERROR: el interruptor 'Nuevo Outlook' esta prendido y abriria el nuevo. Primero: instalar-outlook.ps1 -VolverAlClasico"; exit 1 }
+
+# Outlook recien instalado, sin ninguna cuenta: al abrirlo muestra solo su pantalla de
+# "Agregar cuenta". No hay que hacer nada mas.
+if (-not $est.perfil) {
+  if (-not (Get-Process OUTLOOK -ErrorAction SilentlyContinue)) { Start-Process $exe }
+  Write-Output "Outlook se abrio con su pantalla para agregar la cuenta (es la primera vez). La persona pone su correo y sigue los pasos."
+  exit 0
+}
 
 if (-not (Get-Process OUTLOOK -ErrorAction SilentlyContinue)) { Start-Process $exe }
 

@@ -21,8 +21,14 @@ if ($vWeb -and $vLocal -and ([version]$vWeb -gt [version]$vLocal)) {
 } else { Linea $true ("Skill version $vLocal" + $(if (-not $vWeb) { " (no pude comprobar si hay una nueva)" } else { " (es la ultima)" })) }
 
 # 2. Outlook clasico
-$exe = @("C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE", "C:\Program Files (x86)\Microsoft Office\root\Office16\OUTLOOK.EXE") | Where-Object { Test-Path $_ } | Select-Object -First 1
-Linea ([bool]$exe) "Outlook clasico instalado" "sin el no se puede usar un correo de Microsoft (Gmail si funciona)"
+$est = Estado-Outlook
+$exe = $est.clasico
+if ($exe) { Linea $true "Outlook clasico instalado" }
+elseif ($est.office) { Linea $false ("Outlook clasico instalado (hay Office sin Outlook: {0})" -f $est.office) "agregarlo desde Configuracion > Aplicaciones > Microsoft 365 > Modificar (no se instala desde aca para no tocar Word/Excel)" }
+elseif ($est.nuevo) { Linea $false "Outlook clasico instalado (solo esta el Outlook nuevo, que no sirve)" "instalarlo con instalar-outlook.ps1" }
+else { Linea $false "Outlook clasico instalado (no hay ningun Outlook)" "instalarlo con instalar-outlook.ps1 (Gmail funciona igual sin Outlook)" }
+if ($exe) { Linea (-not $est.usaNuevo) "Se abre el clasico (interruptor 'Nuevo Outlook' apagado)" "apagarlo con instalar-outlook.ps1 -VolverAlClasico" }
+if ($exe) { Linea $est.perfil "Cuenta configurada en Outlook" "agregarla con agregar-cuenta.ps1" }
 $abierto = [bool](Get-Process OUTLOOK -ErrorAction SilentlyContinue)
 if ($exe) { Linea $abierto "Outlook abierto" "la skill lo abre sola cuando haga falta" }
 

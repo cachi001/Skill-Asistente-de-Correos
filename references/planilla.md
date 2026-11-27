@@ -76,6 +76,22 @@ Cada hoja arranca con: fila 1 título, fila 2 explicación, fila 4 encabezados, 
 - Gráficos: anillo por estado, columnas por tema, barras apiladas por prioridad.
 - Todo son fórmulas sobre Seguimiento y Opciones: se actualiza solo.
 
+## Cómo crearla: copiar la plantilla
+
+Lo más seguro es **copiar la planilla de ejemplo** con Google Drive (`copy_file`) y borrar las
+filas de ejemplo, en vez de armarla de cero: la copia ya trae todo, incluido el estilo de
+las listas desplegables. Ese estilo ("Chip", la etiqueta redondeada) **no se puede poner con
+el conector de Sheets**: solo desde la pantalla (Datos > Validación de datos > Opciones
+avanzadas > Estilo de visualización > Chip). Si alguna vez hay que armarla de cero, ese paso
+se hace con el navegador (Playwright) y después se mira con una captura.
+
+Plantilla: "Seguimiento de correos (ejemplo)", id `14_A1lpyzD2M3fnySOD44E3odw2hYcNQ-E6-9cWDfeKM`
+(si la persona no tiene acceso a ese archivo, armala de cero siguiendo esta guía).
+
+Después de crearla o cambiarla, **mirala en pantalla** (navegador y captura) antes de decir
+que quedó bien: los datos pueden estar perfectos y verse mal (títulos cortados, flechitas en
+filas vacías, colores que no coinciden).
+
 ## Formato
 
 - Título azul (#1F5FA8) grande, explicación en gris; encabezados azules con letra blanca,
@@ -84,6 +100,13 @@ Cada hoja arranca con: fila 1 título, fila 2 explicación, fila 4 encabezados, 
   amarillo, Te consulta naranja; Sin responder naranja, Para revisar celeste, Enviado verde,
   Derivado lila, No requiere gris.
 - Configuración regional Argentina (es_AR): en las fórmulas los argumentos van con `;`.
+- Las listas desplegables cubren **solo las filas con datos** (si no, aparecen flechitas en
+  todas las filas vacías). Al agregar un correo, insertá la fila 5 heredando el formato de
+  la de abajo (`insertDimension` con `inheritFromBefore: false`): así se lleva la lista y
+  los colores.
+- En Pendientes, la primera columna es **Días esperando**, para que se vea sin moverse.
+- Los gráficos usan los mismos colores que las etiquetas (por ejemplo Enviado verde,
+  Sin responder naranja), no los colores automáticos.
 
 ## Al terminar de armarla o cambiarla: contar todo
 

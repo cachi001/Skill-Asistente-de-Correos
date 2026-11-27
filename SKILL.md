@@ -68,8 +68,9 @@ sigue, no es opcional.
 
 ## Cómo lee y escribe el correo: dos caminos
 
-La skill NO instala nada ni corre un servidor propio. Primero preguntá (o fijate) qué correo
-es, y usá el camino que le toca:
+La skill no corre un servidor propio. Lo único que puede instalar es el Outlook clásico, y
+solo con el permiso de la persona después de explicarle los riesgos (ver abajo). Primero
+preguntá (o fijate) qué correo es, y usá el camino que le toca:
 
 - **Gmail** → el **conector oficial de Gmail de Claude**: las tools `Gmail`
   (`search_threads`, `get_thread`, `list_drafts`, `create_draft`, `update_draft`, `reply`,
@@ -89,12 +90,20 @@ ocultos) están en `references/outlook-clasico.md` y `assets/outlook-clasico/`. 
 
 - **Al empezar:** `revisar-equipo` (qué está listo y qué falta, sin cambiar nada). Contale a
   la persona en una línea lo que falte, no la lista entera.
-- **Si no tiene el Outlook clásico, lo instalás vos:** si tiene solo el Outlook nuevo, ninguno,
-  o un Office sin Outlook, con su OK corré `instalar-outlook` en segundo plano. Es la
-  instalación que ya probamos: la herramienta oficial de Microsoft, sin el Outlook nuevo, y
-  ella solo toca "Sí" en el cartel de Windows. Si tiene el clásico pero se le abre el nuevo,
-  `instalar-outlook -VolverAlClasico`. Con una cuenta A1 no se puede (no incluye Office de
-  escritorio): decíselo claro.
+- **Si no tiene el Outlook clásico, lo instalás vos, pero SIEMPRE con permiso y contando
+  los riesgos.** Si tiene solo el Outlook nuevo, ninguno, o un Office sin Outlook:
+  1. Corré `instalar-outlook -Revisar`. Dice qué hay en la PC, **qué va a hacer** la
+     instalación y **todos sus riesgos** para ese caso (las líneas `RIESGO:`).
+  2. Contale **cada riesgo** en palabras simples, sin saltear ninguno aunque parezca menor.
+     El más importante: si tiene un Office viejo, **se saca y se reemplaza** por el actual.
+  3. Pedile permiso con la pregunta interactiva. La pregunta repite en una línea lo que
+     va a pasar; opciones: "Instalar ahora" · "Más tarde" · "Tengo una duda". Recomendá
+     "Más tarde" si tiene algo abierto sin guardar o si no está segura de su licencia.
+  4. Solo si elige instalar, corré `instalar-outlook -Confirmado` en segundo plano. Sin
+     `-Confirmado` el script no instala nada.
+  Si tiene el clásico pero se le abre el nuevo, `instalar-outlook -VolverAlClasico` (también
+  con su OK: solo cambia qué Outlook se abre). Con una cuenta A1 no se puede (no incluye
+  Office de escritorio): decíselo claro antes de instalar nada.
 - **Sumar una cuenta:** abrile la ventana con `agregar-cuenta` en lugar de explicarle dónde
   hacer clic; cuando diga que terminó, corré `esperar-buzon` (le muestra una barra mientras
   Outlook baja los correos).
@@ -112,8 +121,8 @@ ocultos) están en `references/outlook-clasico.md` y `assets/outlook-clasico/`. 
 
 **Varios buzones.** Un Outlook puede tener la cuenta propia, otras cuentas y buzones compartidos
 (por ejemplo Certificaciones o Protocolo). Al arrancar corré `listar-buzones`. Si hay más de uno,
-mostrale la lista con nombre, dirección y cuántos sin leer, y preguntale cuál atender. No elijas
-vos. Después usá ese mismo buzón en todo (`-Buzon <nombre>`): se lee de ahí y la respuesta sale
+preguntale cuál atender con la pregunta interactiva: cada opción con nombre, dirección y cuántos
+sin leer. No elijas vos. Después usá ese mismo buzón en todo (`-Buzon <nombre>`): se lee de ahí y la respuesta sale
 desde ahí. Antes de cada OK de envío, decile desde qué dirección va a salir. Todo lo demás —el flujo,
 clasificar por facultad y modalidad, la compuerta de envío— es igual.
 
@@ -123,15 +132,12 @@ clasificar por facultad y modalidad, la compuerta de envío— es igual.
 
 No encasilles la skill. Un buzón puede ser de consultas de alumnos (como Tec Programacion),
 de trámites internos entre oficinas (como Coordinación), o una mezcla. Antes del primer
-"ponerse al día", y cada vez que cambie de buzón, preguntale en pocas palabras:
+"ponerse al día", y cada vez que cambie de buzón, preguntale con la pregunta interactiva
+(ver "Cómo preguntar" abajo), recomendando la opción que se vea en los correos que llegaron:
 
-```
-¿Para qué usás este correo?
-  1 · Consultas de alumnos y aspirantes
-  2 · Pedidos de oficinas, docentes o autoridades
-  3 · Las dos cosas
-  4 · Otro (contame)
-```
+- Pregunta: "¿Para qué usás este correo? Por lo que veo llegan sobre todo <lo que viste>."
+- Opciones: "Consultas de alumnos y aspirantes" · "Pedidos de oficinas, docentes o
+  autoridades" · "Las dos cosas" (y ella puede escribir otro uso).
 
 Adaptate a lo que diga:
 - **Los temas** salen de lo que conteste, no de una lista fija. Los 7 temas de la base son
@@ -144,11 +150,22 @@ Adaptate a lo que diga:
   qué responder), así la próxima vez no le preguntás de nuevo. Mostrale lo guardado y
   dejala cambiarlo cuando quiera.
 
-**Cómo preguntar: con tu recomendación, y esperando lo que piensa la persona.** Cada
-pregunta lleva lo que viste y lo que recomendarías ("Vi que a estos correos les respondés
-siempre con el link del formulario; te recomiendo guardarlo así. ¿Te parece o lo cambiarías?").
+**Cómo preguntar: siempre con la pregunta interactiva, con tu recomendación, y esperando lo
+que piensa la persona.** Toda pregunta que la persona tenga que contestar (elegir buzón, el
+menú, para qué usa el correo, validar una respuesta, dar permiso para instalar) se hace con
+la herramienta de preguntas interactivas (`AskUserQuestion` en Claude Code), no escrita como
+lista en el chat:
+- La opción que recomendás va **primera** y termina en "(Recomendado)".
+- Cada opción explica en una frase **qué pasa si la elige**.
+- El texto de la pregunta se entiende solo (la persona puede ver solo la ventanita): decí
+  ahí lo que viste ("Vi que a estos correos les respondés siempre con el link del
+  formulario. ¿Lo guardo así?").
+- Siempre queda la opción de escribir otra cosa; no hace falta agregar "Otro".
+- Máximo 4 opciones. Si hay más (por ejemplo muchos buzones), mostrá las más probables y
+  dejá que escriba la que falte.
 Después esperá su respuesta: no sigas como si hubiera dicho que sí, y si piensa distinto,
-lo que vale es lo que dice ella.
+lo que vale es lo que dice ella. Solo si esa herramienta no existe, preguntá con una lista
+numerada en el chat.
 
 **Ante cualquier duda, preguntá.** Si no sabés de qué facultad es, a quién se pasa un pedido,
 si un correo ya se respondió por otro lado o qué quiso decir, preguntale en una frase en vez
@@ -180,15 +197,14 @@ para que las revises vos antes de enviar. No mando nada sin tu OK.
 
 📬 Correo: <dirección>  ·  <N> sin responder
 📚 Base de respuestas: <N temas / vacía>
-
-¿Por dónde querés empezar?
-  1 · Ponerme al día con los correos (ver qué hay sin responder)
-  2 · Armar o revisar las respuestas que uso de guía (la base)
-  3 · Hacerte un informe (resumen de lo que hay, lo respondido y lo pendiente)
-  4 · Conectar o cambiar el correo
-
-Decime el número, o contame qué necesitás.
 ```
+
+Y enseguida la pregunta interactiva "¿Por dónde querés empezar?" con estas opciones (las
+"opciones" 1 a 4 de más abajo), recomendando la que convenga según el estado:
+- "Ponerme al día con los correos": ver qué hay sin responder.
+- "Armar o revisar las respuestas guía": la base de respuestas.
+- "Hacer un informe": resumen de lo que hay, lo respondido y lo pendiente.
+- "Conectar o cambiar el correo".
 
 Antes de mostrar el menú, averiguá el estado real para rellenar los `<…>`: cuántos correos
 hay sin responder (listar) y cuántos temas tiene la base (archivos en `conocimiento/`). Si

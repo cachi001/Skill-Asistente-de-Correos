@@ -23,10 +23,23 @@ Si el buzón es Gmail, usá el conector oficial de Gmail (`conectar-buzon.md`).
      nuevo. Con su OK, corré `instalar-outlook.ps1 -VolverAlClasico` (no pide permiso de
      administrador) y que cierre el Outlook nuevo si está abierto.
    - `SOLO EL NUEVO`, `NINGUNO` u `OFFICE SIN OUTLOOK` → **instalalo vos**, no le mandes
-     instrucciones. Con su OK, lanzá `instalar-outlook.ps1` **en segundo plano** (tarda de 10
-     a 25 minutos). Antes decile: "Va a aparecer un cartel de Windows preguntando si permitís
-     cambios: tocá Sí. Después vas a ver la ventana de Microsoft instalando, con su barra.
-     No hace falta que hagas nada más; te aviso cuando termine."
+     instrucciones, pero **nunca sin permiso**:
+     1. El mismo `-Revisar` lista las líneas `RIESGO:` de esa PC: si se desinstala el Office
+        que tiene (con los nombres, incluido Visio o Project), que el nuevo se activa con la
+        cuenta institucional, qué pasa con una A1, que Microsoft cierra Word/Excel/Outlook
+        sin guardar (y cuáles están abiertos ahora), tiempo, GB, espacio en disco y si su
+        cuenta puede dar el permiso de administrador.
+     2. Contale **todos** en castellano simple, sin saltear ninguno. Si se reemplaza su
+        Office, decilo primero y bien claro.
+     3. Pedí permiso con la **pregunta interactiva** ("Instalar ahora" · "Más tarde" ·
+        "Tengo una duda"). Si no está segura de su licencia, recomendá "Más tarde" y
+        revisen juntos portal.office.com > Aplicaciones y dispositivos (si aparece "Instalar
+        Office", la cuenta lo incluye).
+     4. Solo con su sí, lanzá `instalar-outlook.ps1 -Confirmado` **en segundo plano** (tarda
+        de 10 a 25 minutos). Sin `-Confirmado` el script se niega a instalar. Antes decile:
+        "Va a aparecer un cartel de Windows preguntando si permitís cambios: tocá Sí.
+        Después vas a ver la ventana de Microsoft instalando, con su barra. No hace falta
+        que hagas nada más; te aviso cuando termine."
 
    Es la misma instalación que probamos y funcionó (informe en `docs/`, sección 5): la
    herramienta oficial de Microsoft con Microsoft 365 Apps, que se activa con la cuenta
@@ -80,7 +93,7 @@ El `-Numero` es el que devuelve el listado (orden: más nuevos primero).
   Outlook instalado y abierto, cartel de acceso, buzones y cuáles están en solo lectura, base de
   respuestas e índices. No cambia nada ni abre Outlook. Distingue si hay solo el Outlook
   nuevo, ninguno, Office sin Outlook, o el interruptor "Nuevo Outlook" prendido.
-- **Instalar o recuperar el clásico:** `... instalar-outlook.ps1 [-Revisar | -VolverAlClasico]`
+- **Instalar o recuperar el clásico:** `... instalar-outlook.ps1 [-Revisar | -Confirmado | -VolverAlClasico]`
   (ver Requisitos, paso 1). Instalar va siempre en segundo plano y con el OK de la persona.
 
 - **Ponerse al día (lo recomendado, una sola pasada):**

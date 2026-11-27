@@ -8,22 +8,50 @@
 #   - Los archivos van a C:\Users\Public (el instalador de Microsoft no lee carpetas privadas).
 #   - Baja el paquete directo de Microsoft (sin paquete local: un paquete parcial da error 1603).
 #
-#   ... instalar-outlook.ps1 -Revisar          solo dice que hay en la PC (no cambia nada)
-#   ... instalar-outlook.ps1                   instala (Windows pide permiso: "Si")
-#   ... instalar-outlook.ps1 -VolverAlClasico  apaga el interruptor "Nuevo Outlook"
-#   ... instalar-outlook.ps1 -SoloPreparar     baja y verifica el instalador, sin instalar
+#   ... instalar-outlook.ps1 -Revisar              que hay, que va a hacer y TODOS los riesgos (no cambia nada)
+#   ... instalar-outlook.ps1 -Confirmado           instala. SOLO despues de contarle los riesgos a la
+#                                                  persona y de que diga que si (Windows pide permiso: "Si")
+#   ... instalar-outlook.ps1 -VolverAlClasico      apaga el interruptor "Nuevo Outlook"
+#   ... instalar-outlook.ps1 -SoloPreparar         baja y verifica el instalador, sin instalar
 #
 # Tarda de 10 a 25 minutos segun internet: la skill lo lanza en segundo plano.
-param([switch]$Revisar, [switch]$VolverAlClasico, [switch]$SoloPreparar)
+param([switch]$Revisar, [switch]$Confirmado, [switch]$VolverAlClasico, [switch]$SoloPreparar)
 . "$PSScriptRoot\buzon-comun.ps1"
 $ProgressPreference = "SilentlyContinue"
 $e = Estado-Outlook
 
-# Office viejo instalado con MSI (2010-2019): hay que reemplazarlo, no se puede sumar al lado
+# Programas de Office viejos instalados con MSI (2010-2019). RemoveMSI los saca TODOS
+# (tambien Visio, Project, etc. si los hay), por eso se listan en los riesgos.
 $msi = @(Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*",
                          "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" -ErrorAction SilentlyContinue |
-         Where-Object { $_.DisplayName -match '^Microsoft Office (Professional|Standard|Hogar|Home|Plus|Profesional)' -and $_.WindowsInstaller -eq 1 })
+         Where-Object { $_.DisplayName -match '^Microsoft (Office|Visio|Project|Access|Excel|Word|PowerPoint|Outlook|Publisher|OneNote|InfoPath|SharePoint Designer|Lync|Skype)' -and
+                        $_.WindowsInstaller -eq 1 -and $_.SystemComponent -ne 1 } |
+         Select-Object -ExpandProperty DisplayName -Unique)
 $hayOfficeViejo = $msi.Count -gt 0
+
+function Riesgos {
+  $r = @()
+  if ($hayOfficeViejo) {
+    $r += "Se DESINSTALA el Office que tiene ahora: " + ($msi -join ", ") + ". Se reemplaza por el Office actual (Outlook clasico, Word, Excel, PowerPoint, Access, Publisher, OneNote). Si alguno de la lista no esta en el Office actual (por ejemplo Visio o Project), se pierde."
+    $r += "El Office nuevo se activa con la cuenta institucional, no con la clave del Office viejo. Si deja de tener esa cuenta (por ejemplo, deja de trabajar o estudiar ahi), se queda sin Office."
+    $r += "Si la cuenta no incluye Office de escritorio (las A1 no; las A3 y A5 si), el Office viejo se saca igual y el nuevo no se puede activar: se quedaria sin Office que funcione. Confirmar la licencia antes."
+    $r += "Los correos, la cuenta de Outlook y los documentos NO se borran (en la prueba del 25/11 quedaron todos)."
+  } elseif ($e.office) {
+    $r += "Se modifica el Office que ya tiene ($($e.office)) para sumarle Outlook clasico. Word y Excel quedan, pero pueden aparecer programas de Office que no tenia (PowerPoint, Access, Publisher, OneNote)."
+  } else {
+    $r += "Se instala solo el Outlook clasico. No se toca ningun otro programa."
+    $r += "Se activa con la cuenta institucional: si la cuenta no incluye Office de escritorio (las A1 no; las A3 y A5 si), Outlook queda instalado pero sin poder usarse."
+  }
+  if ($e.nuevo) { $r += "El Outlook nuevo queda instalado al lado; no se usa ni molesta." }
+  $abiertos = @(Get-Process WINWORD, EXCEL, POWERPNT, OUTLOOK, MSACCESS, MSPUB, ONENOTE, VISIO, WINPROJ -ErrorAction SilentlyContinue | Select-Object -ExpandProperty ProcessName -Unique)
+  $r += "Durante la instalacion Microsoft CIERRA solos Word, Excel, Outlook y el resto de Office, sin preguntar: lo que no este guardado se pierde. Guardar y cerrar todo antes." + $(if ($abiertos) { " AHORA estan abiertos: " + ($abiertos -join ", ") + "." } else { "" })
+  $r += "Tarda de 10 a 25 minutos y baja entre 2 y 3 GB de internet. No apagar ni reiniciar la PC mientras tanto."
+  $libre = try { [math]::Round((Get-PSDrive C -ErrorAction Stop).Free / 1GB, 1) } catch { $null }
+  if ($null -ne $libre -and $libre -lt 10) { $r += "Hay poco espacio en el disco C: ($libre GB libres; hacen falta unos 10 GB)." }
+  $esAdminPosible = [bool]((whoami /groups) -match 'S-1-5-32-544')
+  $r += "Windows va a pedir permiso de administrador (el cartel 'Desea permitir que esta aplicacion haga cambios'). " + $(if ($esAdminPosible) { "Esta cuenta puede darlo tocando 'Si'." } else { "Esta cuenta NO es administradora: va a hacer falta que alguien con la contrasena de administrador la escriba." })
+  $r
+}
 
 function Situacion {
   if ($e.clasico -and $e.usaNuevo) { return "USA EL NUEVO" }
@@ -42,6 +70,10 @@ if ($Revisar) {
     "SOLO EL NUEVO"      { Write-Output "SOLO EL NUEVO: solo esta el Outlook nuevo, que la skill no puede manejar. Solucion: instalar-outlook.ps1 (instala el clasico)." }
     "NINGUNO"            { Write-Output "NINGUNO: no hay Outlook. Solucion: instalar-outlook.ps1 (instala solo el Outlook clasico)." }
   }
+  if ($sit -ne "CLASICO" -and $sit -ne "USA EL NUEVO") {
+    foreach ($x in Riesgos) { Write-Output ("RIESGO: " + $x) }
+    Write-Output "Para instalar: contarle TODOS los riesgos a la persona, pedirle permiso, y recien con su si: instalar-outlook.ps1 -Confirmado"
+  }
   exit 0
 }
 
@@ -55,6 +87,10 @@ if ($VolverAlClasico) {
 }
 
 if ($sit -eq "CLASICO" -or $sit -eq "USA EL NUEVO") { Write-Output ("YA ESTA: el Outlook clasico ya esta instalado ({0}). No hace falta instalar nada." -f $e.clasico); exit 0 }
+if (-not $Confirmado -and -not $SoloPreparar) {
+  Write-Output "NO INSTALO: falta el permiso de la persona. Primero instalar-outlook.ps1 -Revisar, contarle todos los riesgos, preguntarle, y solo con su si: instalar-outlook.ps1 -Confirmado"
+  exit 2
+}
 
 # 1. Bajar el instalador oficial (con barra) y comprobar que es de Microsoft
 $dir = "C:\Users\Public\correos-tup\instalador"

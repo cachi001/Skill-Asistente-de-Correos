@@ -4,7 +4,7 @@
 
 **Ayuda a responder los correos de un buzón institucional o de Gmail de la Tecnicatura Universitaria en Programación (TUP, UTN) desde Claude Code, sea cual sea su uso: lee lo que llegó, lo clasifica, aprende de cómo ya se respondió y deja las respuestas listas para revisar y enviar. También atiende buzones compartidos.**
 
-![version](https://img.shields.io/badge/versión-0.4.0-1f5fa8)
+![version](https://img.shields.io/badge/versión-0.5.0-1f5fa8)
 ![licencia](https://img.shields.io/badge/licencia-Apache--2.0-1a7f45)
 ![plataforma](https://img.shields.io/badge/Claude%20Code-terminal%20y%20escritorio-6b7684)
 
@@ -23,7 +23,10 @@ Pensada para gente **sin conocimiento técnico**: habla en castellano simple, ex
 - 📥 **Lee la bandeja** y lista lo que está sin responder.
 - 🗂️ **Clasifica** cada consulta por tema, **facultad** y **modalidad** — razonando, no por palabras fijas.
 - ✍️ **Redacta borradores** desde una base de respuestas validada, **adaptando el tono** (formal o informal según el correo).
-- ✅ **Envía solo con tu OK**, uno por uno, con adjuntos si hacen falta.
+- ✅ **Envía solo con tu OK**, uno por uno, con adjuntos si hacen falta. Cada borrador tiene un **código de envío de un solo uso**: sin él no sale, y no se puede mandar dos veces.
+- 🔒 **Modo solo lectura** por buzón: si un correo es solo para mirar, la skill no puede armar ni enviar nada desde ahí, aunque alguien lo pida por error.
+- 📚 **Aprende de cómo ya se respondió**: recorre los enviados una vez y después encuentra al instante cómo se contestó algo parecido.
+- ⏳ **Te muestra qué está haciendo**: pasos numerados en el chat y una ventanita con barra y tiempo restante para lo que tarda.
 - 📊 **Hace informes** del estado del correo (rápido en el chat o en PDF).
 - 🔒 **Nunca inventa datos** y **nunca mezcla facultades**.
 
@@ -71,7 +74,13 @@ Necesitás:
 
 ## Instalación
 
-En una terminal:
+**La forma más fácil: pedíselo a Claude.** Abrí Claude Code y pegale esta frase:
+
+> Instalá la skill de correos con `npx skills add https://github.com/cachi001/Skill-Asistente-de-Correos -g -a claude-code -y`. Si me falta Node.js, instalalo vos primero. Después revisá con `revisar-equipo` si mi Outlook está listo.
+
+Claude hace todo y te va contando qué hace. Si te pide permiso para correr algo, aceptá.
+
+**Si preferís hacerlo vos**, en una terminal:
 
 ```bash
 npx skills add https://github.com/cachi001/Skill-Asistente-de-Correos -g -a claude-code -y
@@ -116,8 +125,14 @@ tup-asistente-correos/
 ├── assets/
 │   ├── plantilla-entrada.md      # formato de cada entrada de la base
 │   └── outlook-clasico/          # scripts COM (ocultos)
-│       ├── agregar-cuenta.ps1
+│       ├── revisar-equipo.ps1      # chequeo al empezar
+│       ├── agregar-cuenta.ps1      # abre la ventana para sumar una cuenta
+│       ├── esperar-buzon.ps1       # barra mientras baja una cuenta nueva
 │       ├── listar-buzones.ps1
+│       ├── modo-buzon.ps1          # solo lectura por buzón
+│       ├── ponerse-al-dia.ps1      # todo lo sin responder, en una pasada
+│       ├── indexar-enviados.ps1    # aprende de los enviados (una vez)
+│       ├── buscar-respuestas.ps1   # cómo se respondió antes, al instante
 │       ├── buzon-comun.ps1
 │       ├── leer-bandeja.ps1
 │       ├── leer-correo.ps1

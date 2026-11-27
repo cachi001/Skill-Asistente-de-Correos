@@ -8,6 +8,8 @@
 # Con -Buzon, el -Numero es el de ese buzon y la respuesta SALE DESDE ese buzon
 # (cuenta agregada: se envia con esa cuenta; compartido: "en nombre de" su direccion).
 # Para textos largos conviene -CuerpoArchivo (ruta a un .txt) en vez de -Cuerpo.
+# Devuelve un CODIGO DE ENVIO de un solo uso: enviar-borrador.ps1 solo envia con ese codigo.
+# Si el buzon esta en modo solo lectura (modo-buzon.ps1), no crea nada.
 param(
   [int]$Numero = 0,
   [string]$Buzon = "",
@@ -26,6 +28,7 @@ if ($Adjunto) { $Adjuntos = $Adjunto.Split(';') | ForEach-Object { $_.Trim() } |
 foreach ($a in $Adjuntos) { if (-not (Test-Path $a)) { Write-Output "ERROR: no existe el adjunto: $a"; exit 1 } }
 Conectar-Outlook
 $store = Elegir-Buzon $Buzon
+Exigir-Escritura $store
 
 if ($Numero -gt 0) {
   $items = $store.GetDefaultFolder(6).Items; $items.Sort("[ReceivedTime]", $true)
@@ -46,5 +49,8 @@ if ($Numero -gt 0) {
 Fijar-Remitente $mail $store
 foreach ($a in $Adjuntos) { [void]$mail.Attachments.Add($a) }
 $mail.Save()
+$desde = Remitente-DeBorrador $mail
+$cod = Nuevo-CodigoEnvio $mail $desde
 Write-Output ("Borrador {0} creado (sin enviar)." -f $tipo)
-Write-Output ("Sale desde: {0} | Para: {1} | Asunto: {2} | Adjuntos: {3}" -f (Remitente-DeBorrador $mail), $mail.To, $mail.Subject, $mail.Attachments.Count)
+Write-Output ("Sale desde: {0} | Para: {1} | Asunto: {2} | Adjuntos: {3}" -f $desde, $mail.To, $mail.Subject, $mail.Attachments.Count)
+Write-Output ("CODIGO DE ENVIO: {0}  (sirve para enviar SOLO este borrador, una sola vez, con el OK de la persona)" -f $cod)

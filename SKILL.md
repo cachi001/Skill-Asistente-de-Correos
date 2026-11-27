@@ -53,6 +53,12 @@ sigue, no es opcional.
   segundo." Que nunca pase algo sin que sepa qué estás haciendo.
 - **De a un paso por vez.** No la abrumes con todo junto ni con listas largas.
 - **Después de cada paso, contá en una línea** qué pasó y qué sigue.
+- **Mostrá en qué paso va y cuántos faltan**, siempre con el mismo formato:
+  `Paso 2 de 4 ⏳ Buscando cómo respondiste antes…` y, al terminar, `Paso 2 de 4 ✅ Listo`.
+  Los pasos de "ponerse al día" son: 1 Leer los correos · 2 Buscar cómo se respondió antes ·
+  3 Armar las respuestas · 4 Revisar y enviar. Si algo va a tardar más de unos segundos,
+  avisá cuánto más o menos ("esto tarda un par de minutos la primera vez") y que se va a
+  abrir una ventanita con una barra que muestra cuánto falta.
 - **Si algo sale mal, explicalo simple**, qué pasó y qué puede hacer, sin códigos de error
   ni términos raros.
 - **Ofrecé ayuda en cada cosa que tenga que hacer ella** (conectar el correo, revisar un
@@ -82,11 +88,25 @@ Si el buzón es **Microsoft 365** y el conector oficial está bloqueado (admin c
 una segunda vía que NO necesita el permiso del administrador, ni token, ni navegador: la
 skill maneja el **Outlook clásico de escritorio** que la persona ya tiene, por su interfaz
 interna. Requiere Windows con Outlook clásico instalado y la cuenta configurada. Los pasos,
-requisitos (incluido quitar el cartel de "acceso por programa") y los scripts
-(`agregar-cuenta`, `listar-buzones`, `leer-bandeja`, `leer-correo`, `crear-borrador`,
-`enviar-borrador`, todos ocultos) están en
-`references/outlook-clasico.md` y `assets/outlook-clasico/`. Si hay que sumar una cuenta,
-**abrile la ventana de Outlook con `agregar-cuenta`** en lugar de explicarle dónde hacer clic.
+requisitos (incluido quitar el cartel de "acceso por programa") y los scripts (todos
+ocultos) están en `references/outlook-clasico.md` y `assets/outlook-clasico/`. Lo esencial:
+
+- **Al empezar:** `revisar-equipo` (qué está listo y qué falta, sin cambiar nada). Contale a
+  la persona en una línea lo que falte, no la lista entera.
+- **Sumar una cuenta:** abrile la ventana con `agregar-cuenta` en lugar de explicarle dónde
+  hacer clic; cuando diga que terminó, corré `esperar-buzon` (le muestra una barra mientras
+  Outlook baja los correos).
+- **Ponerse al día:** `ponerse-al-dia` trae en una sola pasada lo que nadie respondió, agrupado
+  por persona y tema, con fecha. Es mucho más rápido que listar y leer uno por uno.
+- **Cómo se respondió antes:** `indexar-enviados` recorre los enviados una sola vez (las
+  siguientes solo suma lo nuevo) y `buscar-respuestas` encuentra al instante lo parecido.
+- **Solo lectura:** si la persona dice que un buzón es solo para mirar, corré
+  `modo-buzon -SoloLectura si`. Desde ahí los scripts se niegan a armar borradores o enviar
+  desde ese buzón, aunque alguien lo pida por error. Solo ella lo puede volver a "no".
+- **Candado de envío:** `crear-borrador` devuelve un **código de envío** de un solo uso y
+  `enviar-borrador` solo envía con ese código. Mostrale el código junto al borrador; usalo
+  únicamente después de su OK para ese correo. Los borradores que ella escribió a mano en
+  Outlook no tienen código: se envían desde Outlook.
 
 **Varios buzones.** Un Outlook puede tener la cuenta propia, otras cuentas y buzones compartidos
 (por ejemplo Certificaciones o Protocolo). Al arrancar corré `listar-buzones`. Si hay más de uno,
@@ -231,6 +251,10 @@ técnicos de abajo son para vos, no para mostrarlos.
 1. **Buscar los que están sin responder.** Con el conector, traé los correos de la bandeja
    de entrada cuyo último mensaje es de otra persona (nadie respondió todavía), de los
    últimos 14 días salvo que pidan otro período. En Gmail sirve `in:inbox newer_than:14d`.
+   En Outlook clásico, `ponerse-al-dia` hace este paso y el siguiente juntos, en una pasada.
+   Para "cómo se respondió antes", la primera vez corré `indexar-enviados` (avisale que tarda
+   menos de un minuto y que va a ver una barra) y después usá `buscar-respuestas` por cada
+   correo: es instantáneo.
 2. **Leer cada uno completo.** Abrí la conversación entera, no solo el asunto: puede traer
    contexto de mensajes anteriores.
 3. **Cargar tus respuestas guardadas.** Leé los archivos de `conocimiento/` que

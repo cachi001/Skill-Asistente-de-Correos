@@ -1,38 +1,36 @@
-# enviar-borrador.ps1 — Envia UN borrador ya creado. Solo se corre con el OK de la persona.
-# Se identifica el borrador por parte del asunto (-Asunto) para no mandar el equivocado.
-# Busca en los Borradores de todos los buzones. Con -Buzon, solo los que salen desde ese buzon.
+# enviar-borrador.ps1 - Envia UN borrador armado por la skill. Solo se corre con el OK de la persona.
 #
-#   powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File enviar-borrador.ps1 -Asunto "Constancia de alumno" [-Buzon Certificaciones]
+#   powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File enviar-borrador.ps1 -Codigo 4821
 #
-# Si varios borradores coinciden, NO envia ninguno y los lista (para elegir mejor).
+# Candado de envio:
+#  - Necesita el CODIGO DE ENVIO que dio crear-borrador.ps1 para ese borrador. Sin codigo no envia.
+#  - El codigo se usa una sola vez: despues de enviar se borra (un OK = un correo).
+#  - Si el buzon esta en modo solo lectura, no envia.
+#  - Si el borrador ya no esta (se envio o se borro), no hace nada.
+# Los borradores escritos a mano en Outlook no tienen codigo: se envian desde Outlook.
 param(
-  [Parameter(Mandatory=$true)][string]$Asunto,
-  [string]$Buzon = ""
+  [Parameter(Mandatory = $true)][string]$Codigo
 )
 . "$PSScriptRoot\buzon-comun.ps1"
 $ErrorActionPreference = "Stop"
-Conectar-Outlook
-$dirBuzon = ""
-if ($Buzon) { $dirBuzon = Direccion-DeBuzon (Elegir-Buzon $Buzon) }
 
-$coincidencias = @(); $vistos = @{}
-foreach ($s in (Lista-Buzones)) {
-  try { $drafts = $s.GetDefaultFolder(16) } catch { continue }   # 16 = Borradores
-  foreach ($m in $drafts.Items) {
-    if ($m.Class -ne 43 -or $m.Subject -notlike "*$Asunto*") { continue }
-    if ($vistos.ContainsKey($m.EntryID)) { continue }; $vistos[$m.EntryID] = 1
-    if ($dirBuzon -and (Remitente-DeBorrador $m) -ne $dirBuzon) { continue }
-    $coincidencias += $m
-  }
-}
-
-if ($coincidencias.Count -eq 0) { Write-Output "No hay ningun borrador cuyo asunto contenga: $Asunto"; exit 1 }
-if ($coincidencias.Count -gt 1) {
-  Write-Output "HAY VARIOS borradores que coinciden. No envio ninguno. Precisa mas el asunto o el buzon:"
-  foreach ($m in $coincidencias) { Write-Output (" - Desde: {0} | Para: {1} | Asunto: {2}" -f (Remitente-DeBorrador $m), $m.To, $m.Subject) }
+$e = Tomar-CodigoEnvio $Codigo
+if (-not $e) {
+  Write-Output "NO ENVIADO: el codigo $Codigo no existe o ya se uso. Cada borrador tiene su propio codigo y sirve una sola vez."
   exit 1
 }
-$b = $coincidencias[0]
+Conectar-Outlook
+$b = $null
+try { $b = $ns.GetItemFromID($e.entryId, $e.storeId) } catch {}
+if (-not $b -or $b.Class -ne 43 -or $b.Sent -or $b.Parent.EntryID -ne $b.Parent.Store.GetDefaultFolder(16).EntryID) {
+  Borrar-CodigoEnvio $Codigo
+  Write-Output "NO ENVIADO: ese borrador ya no esta en Borradores (se envio o se borro). Revisa Elementos enviados antes de armar otro."
+  exit 1
+}
+Exigir-Escritura $b.Parent.Store
 $desde = Remitente-DeBorrador $b; $para = $b.To; $asu = $b.Subject
+foreach ($s in (Lista-Buzones)) { if ((Direccion-DeBuzon $s) -eq $desde) { Exigir-Escritura $s } }   # el buzon desde el que sale
+
+Borrar-CodigoEnvio $Codigo        # se consume ANTES de enviar: nunca se puede usar dos veces
 $b.Send()
 Write-Output ("ENVIADO desde {0} | Para {1} | Asunto: {2}" -f $desde, $para, $asu)

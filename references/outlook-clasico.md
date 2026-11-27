@@ -56,7 +56,19 @@ El `-Numero` es el que devuelve el listado (orden: más nuevos primero).
   buzón. Si no lo tiene, el envío rebota: avisale a la persona y no reintentes.
   Leer un correo **no** lo marca como leído.
 
-- **Ponerse al día / listar:**
+- **Chequeo al empezar:** `... revisar-equipo.ps1` — versión de la skill (y si hay una nueva),
+  Outlook instalado y abierto, cartel de acceso, buzones y cuáles están en solo lectura, base de
+  respuestas e índices. No cambia nada ni abre Outlook.
+
+- **Ponerse al día (lo recomendado, una sola pasada):**
+  `... ponerse-al-dia.ps1 -Buzon "Tec Programacion" [-Dias 14] [-SoloNuevos] [-Largo 700]`
+  Trae lo que **nadie respondió** (se fija si el correo ya se respondió o reenvió desde Outlook,
+  por cualquiera que use el buzón), agrupa por persona y tema ("4 correos, desde el 24/11"),
+  ordena por fecha y trae el texto sin el historial. Cada fila tiene su `numero` para leer o
+  responder. `-SoloNuevos` trae solo lo llegado desde la vez anterior. Al final muestra los sin
+  leer antes y después (tienen que ser iguales). Si son muchos, aparece la barra de progreso.
+
+- **Listar la bandeja tal cual:**
   `powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File leer-bandeja.ps1 [-Cantidad 25] [-SoloSinLeer]`
   Devuelve N correos con número, fecha, remitente y asunto.
 
@@ -71,10 +83,33 @@ El `-Numero` es el que devuelve el listado (orden: más nuevos primero).
   Para textos largos conviene `-CuerpoArchivo` (ruta a un .txt) en vez de `-Cuerpo`.
   (Probado en vivo: envío a la propia casilla con imagen adjunta; llegó en ~7 s con el adjunto OK.)
 
+  Devuelve un **CÓDIGO DE ENVÍO** de 4 números, de un solo uso, para ese borrador.
+
 - **Enviar un borrador** (solo con el OK de la persona, y **un OK = un correo**):
-  `... enviar-borrador.ps1 -Asunto "parte del asunto" [-Buzon <nombre>]`
-  Busca en los Borradores de todos los buzones. Si varios coinciden, NO envía ninguno y los
-  lista con la dirección desde la que saldría cada uno (para precisar).
+  `... enviar-borrador.ps1 -Codigo 4821`
+  Sin el código de ese borrador no envía. El código se borra al enviar, así que no se puede
+  mandar dos veces. Si el borrador ya no está (se envió o se borró), no hace nada y avisa.
+
+- **Solo lectura por buzón** (lo decide la persona):
+  `... modo-buzon.ps1 -Buzon alberto -SoloLectura si` (o `no`). Sin parámetros muestra el modo
+  de cada buzón. En solo lectura, `crear-borrador` y `enviar-borrador` se niegan (salen con
+  "BLOQUEADO"). Se guarda en `~/.correos-tup/buzones.json`.
+
+- **Cómo se respondió antes:**
+  `... indexar-enviados.ps1 -Buzon "Tec Programacion" [-Dias 180]` recorre los Enviados una vez y
+  guarda en `~/.correos-tup/indice/` cada respuesta con la pregunta que contestaba, y aparte los
+  avisos masivos (traen fechas y requisitos). Tapa DNI, legajos, teléfonos y correos. Las veces
+  siguientes solo suma lo nuevo. También dice quién firma más (para copiar el estilo).
+  `... buscar-respuestas.ps1 -Buzon "Tec Programacion" -Texto "fecha pago cuota"` busca ahí al
+  instante, sin abrir Outlook, y devuelve las más parecidas con su fecha.
+
+- **Esperar a que baje una cuenta nueva:**
+  `... esperar-buzon.ps1 -Buzon alberto` — después de `agregar-cuenta`, muestra una ventanita
+  con lo que va bajando y termina cuando la bandeja deja de crecer.
+
+**Ventanita de progreso:** los scripts largos (ponerse al día con muchos correos, indexar,
+esperar una cuenta) abren una ventana con una barra, cuántos van de cuántos y cuánto falta.
+Solo aparece si la tarea pasa de ~2 segundos. Se apaga con `CORREOS_TUP_SIN_VENTANA=1`.
 
 ## Flujo con la persona
 

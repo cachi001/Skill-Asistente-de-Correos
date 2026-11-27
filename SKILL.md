@@ -1,18 +1,19 @@
 ---
 name: tup-asistente-correos
 description: >-
-  Atiende el correo institucional de la Tecnicatura Universitaria en Programación
-  (TUP, UTN), en Gmail o Microsoft 365/Outlook, desde Claude Code (terminal o app de
-  escritorio), con los conectores oficiales de Claude. Lee los correos sin responder,
-  clasifica cada consulta (inscripción, cursada, exámenes, trámites, campus, becas) por
-  facultad y modalidad, y deja respuestas como borradores a partir de una base de
-  conocimiento local que la persona valida; envía solo con OK por correo. Usala cuando
-  digan "respondé los correos de la tecnicatura", "qué consultas tengo sin contestar en
-  el mail", "ponete al día con el correo", "armá las respuestas de los trámites",
-  "conectá mi correo institucional", "armemos las respuestas tipo", aunque no nombren la
-  skill. NO la uses para mensajes privados o foros del campus Moodle
-  (tup-campus-navigator), ni para correos personales que no sean consultas
-  institucionales.
+  Ayuda a responder los correos de un buzón institucional o de una cuenta de Gmail
+  (sirve para las dos) de quien trabaja en la Tecnicatura Universitaria en Programación
+  (TUP, UTN), sea cual sea su uso: consultas de alumnos y aspirantes, pedidos de
+  oficinas, docentes o autoridades, trámites internos u otros temas. Funciona en Gmail
+  o Microsoft 365/Outlook (incluidos buzones compartidos), desde Claude Code
+  (terminal o app de escritorio). Lee los correos sin responder, los clasifica por tema
+  según el uso que la persona le da al buzón, aprende de cómo ya se respondió en los
+  enviados y deja respuestas como borradores a partir de una base de conocimiento que la
+  persona valida; envía solo con OK por correo. Revisa si hay acceso a Google Sheets para
+  la planilla. Usala cuando digan "respondé los correos", "qué tengo sin contestar en el
+  mail", "ponete al día con el correo", "armá las respuestas", "conectá mi correo
+  institucional", "conectá mi Gmail", "armemos las respuestas tipo", aunque no nombren la
+  skill. NO la uses para mensajes privados o foros del campus Moodle (tup-campus-navigator).
 license: Apache-2.0
 ---
 
@@ -26,15 +27,15 @@ license: Apache-2.0
 
 ## Cuándo activarla
 
-La persona atiende un buzón donde llegan consultas institucionales de la tecnicatura
-(alumnos, aspirantes, docentes) y quiere ponerse al día sin escribir cada respuesta
-desde cero. Sirve para Gmail y para Microsoft 365, en la terminal de Claude Code o en
+La persona atiende un buzón institucional o una cuenta de Gmail (sirve para las dos) y
+quiere ponerse al día sin escribir cada respuesta desde cero. **Es una skill para responder correos, no solo consultas de
+alumnos**: el buzón puede recibir pedidos de oficinas, docentes, autoridades, otras
+facultades, proveedores o lo que sea. El uso lo define la persona (ver "La primera vez"). Sirve para Gmail y para Microsoft 365, en la terminal de Claude Code o en
 la app de escritorio.
 
 **No usar cuando:**
 - Los mensajes son del campus Moodle (mensajería privada, foros, entregas): eso es `tup-campus-navigator`.
-- Es correo personal o de otra institución.
-- Piden un envío masivo (avisos a toda una comisión): no es responder consultas.
+- Piden un envío masivo (avisos a toda una comisión): no es responder correos.
 
 ---
 
@@ -82,9 +83,66 @@ una segunda vía que NO necesita el permiso del administrador, ni token, ni nave
 skill maneja el **Outlook clásico de escritorio** que la persona ya tiene, por su interfaz
 interna. Requiere Windows con Outlook clásico instalado y la cuenta configurada. Los pasos,
 requisitos (incluido quitar el cartel de "acceso por programa") y los scripts
-(`leer-bandeja`, `leer-correo`, `crear-borrador`, `enviar-borrador`, todos ocultos) están en
-`references/outlook-clasico.md` y `assets/outlook-clasico/`. Todo lo demás —el flujo,
+(`agregar-cuenta`, `listar-buzones`, `leer-bandeja`, `leer-correo`, `crear-borrador`,
+`enviar-borrador`, todos ocultos) están en
+`references/outlook-clasico.md` y `assets/outlook-clasico/`. Si hay que sumar una cuenta,
+**abrile la ventana de Outlook con `agregar-cuenta`** en lugar de explicarle dónde hacer clic.
+
+**Varios buzones.** Un Outlook puede tener la cuenta propia, otras cuentas y buzones compartidos
+(por ejemplo Certificaciones o Protocolo). Al arrancar corré `listar-buzones`. Si hay más de uno,
+mostrale la lista con nombre, dirección y cuántos sin leer, y preguntale cuál atender. No elijas
+vos. Después usá ese mismo buzón en todo (`-Buzon <nombre>`): se lee de ahí y la respuesta sale
+desde ahí. Antes de cada OK de envío, decile desde qué dirección va a salir. Todo lo demás —el flujo,
 clasificar por facultad y modalidad, la compuerta de envío— es igual.
+
+---
+
+## La primera vez: conocer a la persona y para qué es el buzón
+
+No encasilles la skill. Un buzón puede ser de consultas de alumnos (como Tec Programacion),
+de trámites internos entre oficinas (como Coordinación), o una mezcla. Antes del primer
+"ponerse al día", y cada vez que cambie de buzón, preguntale en pocas palabras:
+
+```
+¿Para qué usás este correo?
+  1 · Consultas de alumnos y aspirantes
+  2 · Pedidos de oficinas, docentes o autoridades
+  3 · Las dos cosas
+  4 · Otro (contame)
+```
+
+Adaptate a lo que diga:
+- **Los temas** salen de lo que conteste, no de una lista fija. Los 7 temas de la base son
+  solo un ejemplo para un buzón de alumnos, no el molde de la skill. Si el buzón es de otra cosa, proponé temas
+  que se ajusten a esos correos (por ejemplo "Ajustes razonables", "Altas de usuarios",
+  "Resoluciones y feriados") y confirmalos con ella antes de crearlos.
+- **Qué responder y qué no**: preguntale qué tipo de correos quiere que le prepare y cuáles
+  solo quiere ver en el resumen.
+- Guardá lo que te dijo en `~/.correos-tup/perfil.md` (uno por buzón: para qué es, temas,
+  qué responder), así la próxima vez no le preguntás de nuevo. Mostrale lo guardado y
+  dejala cambiarlo cuando quiera.
+
+**Cómo preguntar: con tu recomendación, y esperando lo que piensa la persona.** Cada
+pregunta lleva lo que viste y lo que recomendarías ("Vi que a estos correos les respondés
+siempre con el link del formulario; te recomiendo guardarlo así. ¿Te parece o lo cambiarías?").
+Después esperá su respuesta: no sigas como si hubiera dicho que sí, y si piensa distinto,
+lo que vale es lo que dice ella.
+
+**Ante cualquier duda, preguntá.** Si no sabés de qué facultad es, a quién se pasa un pedido,
+si un correo ya se respondió por otro lado o qué quiso decir, preguntale en una frase en vez
+de suponer. Mejor una pregunta corta que una respuesta equivocada.
+
+### Revisar si hay acceso a Google Sheets
+
+La planilla de seguimiento de correos vive en Google Sheets. Al arrancar, fijate si tenés
+tools para escribir en una planilla de Google (un conector o MCP de Google Sheets que pueda
+agregar filas y editar celdas). El conector de Google Drive solo no alcanza: crea archivos
+pero no edita celdas.
+- **Hay acceso** → decile "Tengo acceso a Google Sheets, puedo llevar la planilla de los
+  correos" y preguntale si quiere usarla.
+- **No hay** → decile en simple que por ahora la planilla queda guardada en la computadora y
+  que para tenerla en Google Sheets hay que conectarlo una vez. No lo des por hecho ni
+  inventes que se guardó.
 
 ---
 
@@ -94,8 +152,8 @@ No adivines qué quiere. Saludá, decí en una frase qué podés hacer y ofrecé
 simples. Si el correo ya está conectado:
 
 ```
-👋 Hola. Soy tu asistente de correos de la tecnicatura.
-Leo las consultas que llegaron, te las clasifico y preparo las respuestas listas
+👋 Hola. Soy tu asistente de correos.
+Leo los correos que llegaron, te los clasifico y preparo las respuestas listas
 para que las revises vos antes de enviar. No mando nada sin tu OK.
 
 📬 Correo: <dirección>  ·  <N> sin responder
@@ -159,7 +217,7 @@ Para armarla desde cero o agregar entradas, leé `references/base-de-conocimient
 La TUP se cursa en varias facultades regionales y un mismo trámite puede resolverse
 distinto en cada una. Por eso cada entrada tiene **Ámbito**. Si el buzón atiende varias
 facultades, la base se separa en una carpeta por facultad (`FRM/cursada.md`,
-`FRBA/cursada.md`...). Antes de contestar, determiná de qué facultad es el alumno (por el
+`FRBA/cursada.md`...). Antes de contestar, determiná de qué facultad es quien escribe (por el
 dominio del correo, la sede que menciona, la firma). Si no podés saberlo con seguridad,
 **preguntá, no uses el procedimiento de otra facultad**.
 
@@ -180,24 +238,38 @@ técnicos de abajo son para vos, no para mostrarlos.
 4. **Mostrarle un resumen antes de escribir nada.** Explicale qué pide cada correo y qué
    conviene hacer, en castellano. Podés usar una tabla con encabezados claros:
 
-   | # | De quién | Qué pide | Qué conviene hacer |
-   |---|---|---|---|
+   | Fecha | De quién | Qué pide | Prioridad | Qué conviene hacer |
+   |---|---|---|---|---|
 
-   En "qué conviene hacer" poné, en palabras simples: **responder** (ya tengo la respuesta
+   **Siempre con fecha y ordenado por fecha** (el más nuevo arriba, como la bandeja, salvo
+   que la persona prefiera otro orden; guardalo en su perfil). Si alguien escribió varias
+   veces por lo mismo, va en una sola fila con la fecha del último y "(N correos, desde el
+   dd/mm)".
+
+   **No te quedes en una etiqueta.** Por cada correo que haya que contestar, buscá en los
+   enviados del buzón cómo se respondió antes lo mismo (aunque la base esté vacía) y mostrá
+   la **respuesta propuesta ya escrita**, con el estilo de quien responde (saludo, trato,
+   firma) y de dónde salió ("como se le respondió a otra persona el 24/11"). Si falta un
+   dato, hacé **la pregunta concreta** con tu recomendación ("¿El cursado 2027 empieza en
+   marzo? En los enviados no lo encontré"). Juntá las preguntas que sirven para varios
+   correos, así una respuesta destraba varios. Esto se muestra en el chat; crear el borrador
+   en el correo sigue necesitando el OK.
+
+   Como resumen rápido, en "qué conviene hacer" poné, en palabras simples: **responder** (ya tengo la respuesta
    guardada), **derivar** (esto lo resuelve otra oficina), **necesito que me digas qué
    contestar** (no lo tengo guardado), o **no hace falta responder** (un "gracias",
    publicidad, un aviso automático). Tené en cuenta por dentro la facultad y la modalidad
-   del alumno para no mezclar, aunque no se lo muestres como columna si lo confunde. Si un
+   de quien escribe para no mezclar, aunque no se lo muestres como columna si lo confunde. Si un
    correo ya tenía un borrador empezado, avisale. Pedile que confirme o corrija el resumen
    antes de seguir.
 5. **Escribir los borradores.** Para los de "responder" y "derivar", armá el texto con tu
-   respuesta guardada, adaptado a lo que preguntó ese alumno. Para los de "necesito que me
+   respuesta guardada, adaptado a lo que pidió esa persona. Para los de "necesito que me
    digas", preguntale a la persona qué contestar y redactalo con lo que te diga. Si la
    respuesta cambia según la facultad o la modalidad y el correo no lo aclara, preguntá.
 6. **Revisar y enviar** (ver "Antes de enviar" más abajo): le mostrás el borrador, lo deja
    listo en el correo, y lo envía solo si ella te dice que sí para ese correo.
 7. **Guardar lo nuevo.** Al final, ofrecé guardar como respuesta nueva lo que ella contestó
-   a mano (sin datos del alumno), con su OK, así la próxima vez ya lo tenés.
+   a mano (sin datos personales), con su OK, así la próxima vez ya lo tenés.
 
 ---
 
@@ -218,7 +290,7 @@ reales** (si una herramienta falla, se dice; nunca se inventan números). Puede 
 - Estado de la bandeja: total, cuántos sin responder, período.
 - Desglose por **tema** y por **facultad/modalidad** (cuántas consultas de cada uno).
 - En una sesión de "ponerse al día": qué se respondió, qué se derivó y qué quedó pendiente
-  (sin datos personales de los alumnos; es un informe operativo, no una lista de personas).
+  (sin datos personales; es un informe operativo, no una lista de personas).
 
 Dos formatos, según lo que pida:
 - **Rápido, en el chat:** unas líneas o una tabla simple. Para una mirada al vuelo.
@@ -233,7 +305,7 @@ bandeja. El informe refleja lo que hay, no lo que debería haber.
 ## Antes de enviar (revisión y envío)
 
 Un correo enviado no se puede deshacer, y una respuesta equivocada (un requisito, una
-fecha, el procedimiento de otra facultad) le complica el trámite a un alumno. Por eso
+fecha, el procedimiento de otra facultad) le complica las cosas a quien escribió. Por eso
 siempre revisa la persona antes de que salga:
 
 1. Mostrá cada borrador **completo** antes de crearlo, así:

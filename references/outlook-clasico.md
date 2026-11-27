@@ -25,8 +25,14 @@ Microsoft sin admin consent.
    Outlook clásico actual gratis desde `portal.office.com` → "Instalar Office"
    (o con la herramienta de implementación de Office para forzar el clásico). El plan
    **A1 NO** incluye Office de escritorio.
-2. **La cuenta agregada al Outlook clásico** (Archivo → Agregar cuenta, login + MFA). Esto
-   crea el buzón local (OST). Se hace una vez.
+2. **La cuenta agregada al Outlook clásico** (login + MFA). Se hace una vez. **No le des
+   instrucciones a la persona: abrile vos la ventana** con `agregar-cuenta.ps1` (abre Outlook si
+   está cerrado y dispara "Agregar cuenta"). Lanzalo aparte, sin esperar, porque la ventana
+   queda abierta hasta que la persona termina:
+   `Start-Process powershell -WindowStyle Hidden -ArgumentList '-ExecutionPolicy Bypass -File "<ruta>\agregar-cuenta.ps1"'`
+   Después decile solo esto: "Te abrí la ventana de Outlook. Poné el correo, tocá Conectar,
+   la contraseña y la verificación del celular. Avisame cuando diga que está lista."
+   La contraseña la escribe la persona en la ventana de Microsoft; nunca se la pidas.
 3. **Abrir Outlook una vez a mano** después de instalarlo (aceptar condiciones, iniciar
    sesión). Si no, el modo automático da el error `0x80080005` (Outlook nunca arrancó).
 4. **Quitar el cartel de "acceso por programa"** (una vez, con permiso de administrador):
@@ -40,24 +46,35 @@ Microsoft sin admin consent.
 Todos corren **ocultos** (`-WindowStyle Hidden`), sin mostrar consolas a la persona.
 El `-Numero` es el que devuelve el listado (orden: más nuevos primero).
 
+- **Ver qué buzones hay** (cuenta propia, otras cuentas, compartidos):
+  `... listar-buzones.ps1`
+  Todos los demás scripts aceptan `-Buzon <parte del nombre o dirección>`. Sin `-Buzon` usan la
+  cuenta principal. Si el nombre coincide con más de uno, no adivinan: devuelven error y la lista.
+  El `-Numero` vale **dentro de un buzón**: listá, leé y respondé siempre con el mismo `-Buzon`.
+  Al responder desde un compartido, el borrador sale "en nombre de" su dirección
+  (`SentOnBehalfOfName`); eso exige que la cuenta tenga permiso de enviar como o en nombre de ese
+  buzón. Si no lo tiene, el envío rebota: avisale a la persona y no reintentes.
+  Leer un correo **no** lo marca como leído.
+
 - **Ponerse al día / listar:**
   `powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File leer-bandeja.ps1 [-Cantidad 25] [-SoloSinLeer]`
   Devuelve N correos con número, fecha, remitente y asunto.
 
 - **Leer uno completo** (para entender qué pide):
   `... leer-correo.ps1 -Numero 3`
-  Devuelve remitente, fecha, asunto, EntryID y el cuerpo.
+  Devuelve remitente, fecha, asunto y el cuerpo (sin el historial citado del hilo).
 
 - **Dejar un borrador** (NO envía; queda en Borradores):
   - Respuesta en el hilo: `... crear-borrador.ps1 -Numero 3 -CuerpoArchivo "C:\...\respuesta.txt"`
   - Correo nuevo: `... crear-borrador.ps1 -Para "x@..." -Asunto "..." -CuerpoArchivo "..."`
-  - Con adjuntos: agregar `-Adjunto "C:\ruta\archivo1.pdf","C:\ruta\imagen.png"` (una o varias rutas).
+  - Con adjuntos: agregar `-Adjunto "C:\ruta\archivo1.pdf;C:\ruta\imagen.png"` (una o varias rutas, separadas por `;`).
   Para textos largos conviene `-CuerpoArchivo` (ruta a un .txt) en vez de `-Cuerpo`.
   (Probado en vivo: envío a la propia casilla con imagen adjunta; llegó en ~7 s con el adjunto OK.)
 
 - **Enviar un borrador** (solo con el OK de la persona, y **un OK = un correo**):
-  `... enviar-borrador.ps1 -Asunto "parte del asunto"`
-  Si varios borradores coinciden, NO envía ninguno y los lista (para precisar).
+  `... enviar-borrador.ps1 -Asunto "parte del asunto" [-Buzon <nombre>]`
+  Busca en los Borradores de todos los buzones. Si varios coinciden, NO envía ninguno y los
+  lista con la dirección desde la que saldría cada uno (para precisar).
 
 ## Flujo con la persona
 

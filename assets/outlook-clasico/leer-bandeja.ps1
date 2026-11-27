@@ -1,26 +1,23 @@
 # leer-bandeja.ps1 — Lista correos de la bandeja de entrada del Outlook clasico por COM.
 # No muestra ventanas. Sin token, sin navegador, sin consentimiento de admin.
 #
-#   powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File leer-bandeja.ps1 [-Cantidad 25] [-SoloSinLeer]
+#   powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File leer-bandeja.ps1 [-Buzon Certificaciones] [-Cantidad 25] [-SoloSinLeer]
 #
-# El numero de cada correo sirve para pasarselo a leer-correo.ps1 / crear-borrador.ps1.
+# Sin -Buzon lee tu cuenta. Los buzones disponibles salen de listar-buzones.ps1.
+# El numero de cada correo sirve para leer-correo.ps1 / crear-borrador.ps1 (con el mismo -Buzon).
 param(
+  [string]$Buzon = "",
   [int]$Cantidad = 25,
   [switch]$SoloSinLeer
 )
+. "$PSScriptRoot\buzon-comun.ps1"
 $ErrorActionPreference = "Stop"
-try {
-  try { $ol = [Runtime.InteropServices.Marshal]::GetActiveObject("Outlook.Application") }
-  catch { $ol = New-Object -ComObject Outlook.Application }
-  $ns = $ol.GetNamespace("MAPI")
-  $inbox = $ns.GetDefaultFolder(6)   # 6 = Bandeja de entrada
-} catch {
-  Write-Output "ERROR: no se pudo abrir Outlook. Abrilo una vez a mano y volve a intentar."
-  exit 1
-}
+Conectar-Outlook
+$store = Elegir-Buzon $Buzon
+$inbox = $store.GetDefaultFolder(6)   # 6 = Bandeja de entrada
 $items = $inbox.Items
 $items.Sort("[ReceivedTime]", $true)
-Write-Output ("BANDEJA: {0} | Total: {1} | Sin leer: {2}" -f $inbox.Parent.Name, $items.Count, $inbox.UnReadItemCount)
+Write-Output ("BUZON: {0} <{1}> | Total: {2} | Sin leer: {3}" -f $store.DisplayName, (Direccion-DeBuzon $store), $items.Count, $inbox.UnReadItemCount)
 Write-Output ("=" * 70)
 $n = 0
 foreach ($m in $items) {
@@ -34,4 +31,4 @@ foreach ($m in $items) {
   Write-Output ("{0,3}. [{1}] {2:dd/MM HH:mm}  {3,-26}  {4}" -f $n, $marca, $m.ReceivedTime, $de, $m.Subject)
 }
 Write-Output ("=" * 70)
-Write-Output "(* = sin leer)  ver uno: leer-correo.ps1 -Numero <n>"
+Write-Output "(* = sin leer)  ver uno: leer-correo.ps1 -Numero <n> (con el mismo -Buzon)"

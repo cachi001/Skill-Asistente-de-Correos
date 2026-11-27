@@ -8,6 +8,32 @@ respuestas (la base nunca guarda datos de personas).
 Antes de crearla, preguntá con la pregunta interactiva si la quiere y si arranca vacía o con
 los correos que ya se vieron. Nunca la compartas ni la muevas sin que lo pida.
 
+## Dónde queda: el link siempre a mano
+
+- Al crearla, guardá su título, id, link y la cuenta de Google en
+  `~/.correos-tup/planilla.json`. Así la skill (y `revisar-equipo`) siempre sabe cuál es.
+- **Dá el link completo, en su propia línea**, cada vez que la creás, la actualizás o la
+  persona pregunta por ella. No lo escondas dentro de una frase:
+
+  📊 Planilla de seguimiento:
+  https://docs.google.com/spreadsheets/d/<id>/edit
+
+- Decile también dónde la encuentra sin el link: en su Google Drive ("Mi unidad"), con ese
+  título, en la cuenta de Google con la que está conectado Claude.
+- Ofrecé abrírsela en el navegador (pregunta interactiva). Si dice que sí:
+  `Start-Process "<link>"`.
+
+## Al terminar de armarla o cambiarla: contar todo
+
+Cuando la creás o le cambiás algo, explicale **todo lo que se hizo y dónde quedó**, sin
+dejar nada afuera, en este orden:
+1. El link completo, en su propia línea, y dónde está en Drive.
+2. Cada hoja: qué tiene y qué se colocó (filas, columnas, listas desplegables, colores,
+   fórmulas, gráficos).
+3. Qué revisaste y salió bien (por ejemplo: los números del Resumen coinciden).
+4. Qué se escribe solo de acá en adelante y qué puede tocar ella.
+Recién después, preguntá si quiere cambiar algo.
+
 ## Las cuatro hojas
 
 | Hoja | Qué tiene | Quién la escribe |

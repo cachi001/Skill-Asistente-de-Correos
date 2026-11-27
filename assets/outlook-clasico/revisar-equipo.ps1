@@ -58,5 +58,8 @@ Linea ($temas.Count -gt 0) ("Base de respuestas: {0} temas" -f $temas.Count) "se
 $idx = @(Get-ChildItem (Carpeta-Datos "indice") -Filter *.json -ErrorAction SilentlyContinue)
 foreach ($i in $idx) { Write-Output ("[OK]    Indice de enviados: {0} (al {1:dd/MM/yyyy})" -f $i.BaseName, $i.LastWriteTime) }
 if (-not $idx) { Linea $false "Indice de enviados" "se arma una vez con indexar-enviados.ps1 (barra de progreso)" }
+$pl = Leer-Json (Join-Path (Carpeta-Datos) "planilla.json")
+if ($pl -and $pl.link) { Write-Output ("[OK]    Planilla de seguimiento: {0}" -f $pl.titulo); Write-Output ("          {0}" -f $pl.link) }
+else { Linea $false "Planilla de seguimiento" "se crea en Google Sheets si la persona la quiere (references/planilla.md)" }
 Write-Output ("=" * 70)
 Write-Output "Google Sheets y Gmail los revisa Claude (son conectores, no se ven desde aca)."

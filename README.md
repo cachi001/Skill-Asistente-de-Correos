@@ -34,10 +34,9 @@ Dos caminos, según el buzón:
 | Camino | Cómo conecta | Cuándo se usa |
 |---|---|---|
 | **Gmail** | Conector oficial de Claude (un login de Google) | El buzón es Gmail |
-| **Microsoft 365 (Outlook clásico)** | A través del Outlook de escritorio ya instalado, por su interfaz COM | El buzón es Microsoft y el conector oficial está bloqueado por el administrador |
-| Microsoft 365 (conector) | Conector oficial de Claude | Si el administrador de la facultad lo aprueba |
+| **Microsoft 365 (Outlook clásico)** | A través del Outlook de escritorio ya instalado, por su interfaz COM | El buzón es Microsoft 365, incluidos los buzones compartidos |
 
-El **modo Outlook clásico** no usa token, no abre el navegador y no necesita el consentimiento del administrador: la skill le da órdenes al Outlook que ya está abierto y con tu sesión iniciada, como lo haría una macro. Quien habla con Microsoft es Outlook (la app oficial), con tu login y tu MFA.
+El **modo Outlook clásico** no usa token, no abre el navegador y no necesita ningún permiso del administrador: la skill le da órdenes al Outlook que ya está abierto y con tu sesión iniciada, como lo haría una macro. Quien habla con Microsoft es Outlook (la app oficial), con tu login y tu MFA.
 
 ```
 Microsoft 365  ⇄  Outlook en tu PC  ⇄  la skill
@@ -122,13 +121,16 @@ tup-asistente-correos/
 ├── README.md
 ├── VERSION
 ├── references/
-│   ├── conectar-buzon.md         # conectar Gmail / Microsoft 365
+│   ├── conectar-buzon.md         # conectar Gmail
 │   ├── outlook-clasico.md        # modo Outlook clásico (COM): requisitos y uso
 │   ├── base-de-conocimiento.md   # armado, Ámbito, modalidad, mantenimiento
 │   └── redaccion.md              # forma y tono (incluye tono adaptativo)
 ├── assets/
 │   ├── plantilla-entrada.md      # formato de cada entrada de la base
 │   └── outlook-clasico/          # scripts COM (ocultos)
+│       ├── agregar-cuenta.ps1
+│       ├── listar-buzones.ps1
+│       ├── buzon-comun.ps1
 │       ├── leer-bandeja.ps1
 │       ├── leer-correo.ps1
 │       ├── crear-borrador.ps1
@@ -138,7 +140,7 @@ tup-asistente-correos/
 
 ## 🧭 Decisiones de diseño
 
-- **Solo instrucciones, sin servidor propio.** Usa los conectores oficiales y, para Microsoft sin admin, el Outlook ya instalado. Menos cosas que instalar y que puedan romperse.
+- **Solo instrucciones, sin servidor propio.** Usa el conector oficial de Gmail y, para Microsoft, el Outlook ya instalado. Menos cosas que instalar y que puedan romperse.
 - **Base en Markdown local, no en una base de datos.** Es criterio humano: la persona la lee, valida y corrige en segundos.
 - **Ámbito por entrada.** Un trámite cambia entre facultades; marcar la facultad evita darle a un alumno el procedimiento de otra sede.
 - **Borrador primero, envío después.** Crear un borrador no tiene consecuencias; enviar sí. Un OK vale por un solo correo.

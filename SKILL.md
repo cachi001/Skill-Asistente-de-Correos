@@ -75,6 +75,9 @@ sigue, no es opcional.
 
   Uno por línea, al principio. No uses otros emojis para estados, ni ✉️ para algo que no
   se envió de verdad.
+- **Toda tabla lleva título y una explicación corta** de qué muestra y para qué sirve (en
+  el chat, en la planilla y en los informes). Nunca una tabla suelta. Si mezcla buzones, que
+  se vea de qué buzón es cada fila. Lo más nuevo va arriba.
 - **Si algo sale mal, explicalo simple**, qué pasó y qué puede hacer, sin códigos de error
   ni términos raros.
 - **Ofrecé ayuda en cada cosa que tenga que hacer ella** (conectar el correo, revisar un

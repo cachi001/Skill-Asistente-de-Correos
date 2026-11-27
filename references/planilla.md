@@ -104,7 +104,11 @@ filas vacías, colores que no coinciden).
   todas las filas vacías). Al agregar un correo, insertá la fila 5 heredando el formato de
   la de abajo (`insertDimension` con `inheritFromBefore: false`): así se lleva la lista y
   los colores.
-- En Pendientes, la primera columna es **Días esperando**, para que se vea sin moverse.
+- En Pendientes, la primera columna es **Días esperando**, para que se vea sin moverse. Se
+  lee como texto ("Hoy", "1 día", "3 días", con el formato de número
+  `[=0]"Hoy";[=1]"1 día";0" días"`) y lleva color según la demora: verde hasta 1 día,
+  amarillo 2 o 3 días, rojo 4 o más.
+- Las explicaciones de la fila 2 tienen que entrar en el ancho de la pantalla: cortas.
 - Los gráficos usan los mismos colores que las etiquetas (por ejemplo Enviado verde,
   Sin responder naranja), no los colores automáticos.
 
